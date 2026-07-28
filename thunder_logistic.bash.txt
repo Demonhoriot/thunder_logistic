@@ -1,0 +1,7 @@
+cd thunder-logistic
+git init
+git add .
+git commit -m "Thunder Logistic - versão completa"
+git branch -M main
+git remote add origin https://github.com/TEU-USUARIO/thunder-logistic.git
+git push -u origin main

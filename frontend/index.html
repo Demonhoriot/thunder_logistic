@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THUNDER LOGISTIC — Entregas Rápidas em Moçambique</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container nav-container">
+      <div class="logo"><span>THUNDER</span> <span>LOGISTIC</span></div>
+      <div class="menu" id="menu">
+        <a href="#inicio">Início</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#painel">Painel</a>
+        <a href="#contato">Contato</a>
+        <button class="btn-login" onclick="abrirLogin()">Entrar</button>
+      </div>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="container hero-grid">
+      <div>
+        <h1>Entregas rápidas,<br>inteligentes e seguras.</h1>
+        <p>A plataforma de logística mais moderna de Moçambique. Solicite comida, farmácia, supermercado, documentos e muito mais — tudo em um só lugar.</p>
+        <div class="hero-buttons">
+          <button class="primary" onclick="abrirLogin()">Pedir Agora</button>
+          <button class="secondary" onclick="scrollToPainel('entregador')">Seja Entregador</button>
+        </div>
+      </div>
+      <div>
+        <div class="phone">
+          <div class="phone-top">Thunder Logistic</div>
+          <div class="phone-body">
+            <h2>Dashboard em Tempo Real</h2>
+            <div class="stat-grid">
+              <div class="card"><h2>1.240</h2><span>Pedidos Hoje</span></div>
+              <div class="card"><h2>842</h2><span>Entregadores</span></div>
+              <div class="card"><h2>318</h2><span>Empresas</span></div>
+              <div class="card"><h2>98%</h2><span>Satisfação</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVIÇOS -->
+  <section class="services" id="servicos">
+    <div class="container">
+      <div class="section-title">
+        <h2>Nossos Serviços</h2>
+        <p>Tudo que você precisa em um único aplicativo.</p>
+      </div>
+      <div class="service-grid">
+        <div class="service">
+          <div class="icon">🍔</div>
+          <h3>Entrega de Comida</h3>
+          <p>Peça refeições dos melhores restaurantes da cidade.</p>
+        </div>
+        <div class="service">
+          <div class="icon">🛒</div>
+          <h3>Supermercado</h3>
+          <p>Receba suas compras rapidamente em casa.</p>
+        </div>
+        <div class="service">
+          <div class="icon">💊</div>
+          <h3>Farmácia</h3>
+          <p>Medicamentos entregues com segurança e rapidez.</p>
+        </div>
+        <div class="service">
+          <div class="icon">📦</div>
+          <h3>Encomendas</h3>
+          <p>Entregas rápidas de pacotes em toda a cidade.</p>
+        </div>
+        <div class="service">
+          <div class="icon">📄</div>
+          <h3>Documentos</h3>
+          <p>Correspondências e documentos empresariais.</p>
+        </div>
+        <div class="service">
+          <div class="icon">🏢</div>
+          <h3>Empresas</h3>
+          <p>Soluções completas de logística para negócios.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAINEL -->
+  <section class="dashboard-preview" id="painel">
+    <div class="container">
+      <div class="section-title">
+        <h2>Painel Inteligente</h2>
+        <p>Controle toda a operação da Thunder Logistic em tempo real.</p>
+      </div>
+      <div class="preview">
+        <div class="sidebar">
+          <h2>THUNDER</h2>
+          <ul>
+            <li class="active" onclick="abrirPainel('dashboard')">🏠 Dashboard</li>
+            <li onclick="abrirPainel('cliente')">👤 Cliente</li>
+            <li onclick="abrirPainel('entregador')">🏍 Entregador</li>
+            <li onclick="abrirPainel('empresa')">🏢 Empresa</li>
+            <li onclick="abrirPainel('carteira')">💰 Carteira</li>
+            <li onclick="abrirPainel('rastreamento')">📍 Rastreamento</li>
+            <li onclick="abrirPainel('admin')">⚙ Admin</li>
+          </ul>
+        </div>
+        <div class="content" id="painelContent">
+          <!-- Conteúdo dinâmico injetado pelo JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contato">
+    <h2>THUNDER LOGISTIC</h2>
+    <p>Entregas rápidas, inteligentes e seguras em Moçambique.</p>
+    <p style="margin-top:12px">📧 contato@thunderlogistic.mz &nbsp;|&nbsp; 📱 +258 84 000 0000</p>
+    <p style="margin-top:20px;opacity:.6">© 2026 Thunder Logistic EI — Todos os direitos reservados</p>
+  </footer>
+
+  <!-- MODAL LOGIN -->
+  <div class="modal" id="loginModal">
+    <div class="modal-box">
+      <button class="close-modal" onclick="fecharModais()">×</button>
+      <h2>Entrar</h2>
+      <input class="input" id="loginEmail" type="text" placeholder="Telefone ou Email">
+      <input class="input" id="loginSenha" type="password" placeholder="Senha">
+      <button class="bigButton" onclick="fazerLogin()">Entrar</button>
+      <div class="modal-link">
+        <a href="#" onclick="event.preventDefault();abrirCadastro()">Criar Conta</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CADASTRO -->
+  <div class="modal" id="cadastroModal">
+    <div class="modal-box">
+      <button class="close-modal" onclick="fecharModais()">×</button>
+      <h2>Criar Conta</h2>
+      <input class="input" id="cadNome" placeholder="Nome completo">
+      <input class="input" id="cadTelefone" placeholder="Telefone">
+      <input class="input" id="cadEmail" placeholder="Email">
+      <select class="input" id="cadTipo">
+        <option value="cliente">Cliente</option>
+        <option value="entregador">Entregador</option>
+        <option value="empresa">Empresa</option>
+      </select>
+      <input class="input" id="cadSenha" type="password" placeholder="Senha">
+      <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar Senha">
+      <button class="bigButton" onclick="cadastrar()">Cadastrar</button>
+      <div class="modal-link">
+        <a href="#" onclick="event.preventDefault();abrirLogin()">Já tenho conta</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
