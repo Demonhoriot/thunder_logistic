@@ -2,7 +2,7 @@
    THUNDER LOGISTIC — Frontend (conectado à API)
    ========================================================= */
 
-const API = 'http://localhost:3001/api';
+const API = window.location.origin + '/api';
 
 let token = localStorage.getItem('thunder_token') || null;
 let user = JSON.parse(localStorage.getItem('thunder_user') || 'null');

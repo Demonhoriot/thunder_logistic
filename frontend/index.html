@@ -169,6 +169,29 @@
     </div>
   </div>
 
-  <script src="js/app.js"></script>
+<script src="js/app.js"></script>
+<script>
+  // Fallback: se o app.js não carregar, estes botões ainda funcionam
+  if (typeof abrirLogin !== 'function') {
+    window.abrirLogin = function () {
+      var m = document.getElementById('loginModal');
+      if (m) m.classList.add('show');
+    };
+    window.abrirCadastro = function () {
+      var l = document.getElementById('loginModal');
+      var c = document.getElementById('cadastroModal');
+      if (l) l.classList.remove('show');
+      if (c) c.classList.add('show');
+    };
+    window.fecharModais = function () {
+      document.querySelectorAll('.modal').forEach(function (m) {
+        m.classList.remove('show');
+      });
+    };
+    window.onclick = function (e) {
+      if (e.target.classList.contains('modal')) fecharModais();
+    };
+  }
+</script>
 </body>
 </html>

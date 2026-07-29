@@ -40,11 +40,17 @@ app.get('/api/health', (req, res) => {
 // Servir frontend em produção (opcional)
 const frontendPath = path.join(__dirname, '../frontend');
 app.use(express.static(frontendPath));
-app.get('*', (req, res) => {
-  // Só devolve index.html se não for rota de API
-  if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  }
+
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  const indexFile = path.join(frontendPath, 'index.html');
+  res.sendFile(indexFile, (err) => {
+    if (err) {
+      res.status(500).json({
+        erro: 'Frontend não encontrado. Confirma que a pasta frontend existe no deploy.'
+      });
+    }
+  });
 });
 
 // Erro global
