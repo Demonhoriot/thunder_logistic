@@ -149,7 +149,7 @@ async function renderCliente() {
     '<p><b>Destino:</b> ' + p.destino + '</p><p><b>Valor:</b> ' + p.valor + ' MT</p>' +
     '<p><b>Status:</b> <span style="color:var(--primary);font-weight:600">' + p.status + '</span></p>' +
     (p.status !== 'Entregue' && p.status !== 'Cancelado'
-      ? '<button class="primary btn-sm" onclick="avancarStatus(\\'' + p.id + '\\',\\'' + p.status + '\\')">Avançar Status</button>'
+      ? '<button class="primary btn-sm" onclick="avancarStatus(\'' + p.id + '\',\'' + p.status + '\')">Avançar Status</button>'
       : '') + '</div>'
   ).join('') || '<p style="color:#666">Nenhum pedido ainda.</p>';
 
@@ -183,14 +183,14 @@ async function renderEntregador() {
     '<div class="plan-card"><h3>' + p.nome + '</h3>' +
     '<h2 style="color:var(--primary);margin:8px 0">' + p.valor + ' MT</h2>' +
     '<p>' + p.entregas + ' entregas</p>' +
-    '<button class="primary btn-sm" style="margin-top:12px;width:100%" onclick="comprarPlano(\\'' + p.nome + '\\')">Comprar</button></div>'
+    '<button class="primary btn-sm" style="margin-top:12px;width:100%" onclick="comprarPlano(\'' + p.nome + '\')">Comprar</button></div>'
   ).join('');
 
   const pedidosHtml = disponiveis.map(p =>
     '<div class="pedido-card" style="border-left:5px solid var(--primary)">' +
     '<h3>Pedido #' + p.id + '</h3><p>' + p.tipo + ' — ' + p.origem + ' → ' + p.destino + '</p>' +
     '<p><b>' + p.valor + ' MT</b></p>' +
-    '<button class="primary btn-sm" onclick="aceitarPedido(\\'' + p.id + '\\')">Aceitar</button></div>'
+    '<button class="primary btn-sm" onclick="aceitarPedido(\'' + p.id + '\')">Aceitar</button></div>'
   ).join('') || '<p style="color:#666">Nenhum pedido disponível.</p>';
 
   return '<h1 class="panel-title">Painel do Entregador</h1><div class="grid-4">' +
@@ -214,8 +214,8 @@ async function renderEmpresa() {
   const produtos = me.produtos || [];
   const produtosHtml = produtos.map(p =>
     '<div class="product-card"><h3>' + p.nome + '</h3><p>Preço: <b>' + p.preco + ' MT</b></p>' +
-    '<button class="primary btn-sm" onclick="editarProduto(\\'' + p.id + '\\',\\'' + p.nome + '\\',' + p.preco + ')">Editar</button> ' +
-    '<button class="secondary btn-sm" onclick="eliminarProduto(\\'' + p.id + '\\')">Eliminar</button></div>'
+    '<button class="primary btn-sm" onclick="editarProduto(\'' + p.id + '\',\'' + p.nome + '\',' + p.preco + ')">Editar</button> ' +
+    '<button class="secondary btn-sm" onclick="eliminarProduto(\'' + p.id + '\')">Eliminar</button></div>'
   ).join('') || '<p style="color:#666">Nenhum produto.</p>';
 
   return '<h1 class="panel-title">Painel da Empresa</h1><div class="grid-4">' +
@@ -240,7 +240,7 @@ async function renderCarteira() {
   const cuponsHtml = (data.cupons || []).map(c =>
     '<div class="cupom-card"><h3>' + c.codigo + '</h3><p>Desconto: ' + c.desconto + ' MT ' +
     (c.usado ? '(já usado)' : '') + '</p>' +
-    (!c.usado ? '<button class="primary btn-sm" onclick="usarCupom(\\'' + c.codigo + '\\')">Usar</button>' : '') + '</div>'
+    (!c.usado ? '<button class="primary btn-sm" onclick="usarCupom(\'' + c.codigo + '\')">Usar</button>' : '') + '</div>'
   ).join('');
   const extratoHtml = (data.extrato || []).map(e =>
     '<div style="background:#fff;padding:12px 16px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between">' +
