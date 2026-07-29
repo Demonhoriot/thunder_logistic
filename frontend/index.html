@@ -16,10 +16,10 @@
     <div class="container nav-container">
       <div class="logo"><span>THUNDER</span> <span>LOGISTIC</span></div>
       <div class="menu" id="menu">
-        <a href="#inicio">Início</a>
-        <a href="#servicos">Serviços</a>
-        <a href="#painel">Painel</a>
-        <a href="#contato">Contato</a>
+               <a href="#inicio" onclick="mostrarSecao('inicio'); return false;">Início</a>
+        <a href="#servicos" onclick="mostrarSecao('servicos'); return false;">Serviços</a>
+        <a href="#painel" onclick="mostrarSecao('painel'); return false;">Painel</a>
+        <a href="#contato" onclick="mostrarSecao('contato'); return false;">Contato</a>
         <button class="btn-login" onclick="abrirLogin()">Entrar</button>
       </div>
       <div class="hamburger" id="hamburger" onclick="toggleMenu()">
@@ -115,7 +115,6 @@
             <li onclick="abrirPainel('empresa')">🏢 Empresa</li>
             <li onclick="abrirPainel('carteira')">💰 Carteira</li>
             <li onclick="abrirPainel('rastreamento')">📍 Rastreamento</li>
-            <li onclick="abrirPainel('admin')">⚙ Admin</li>
           </ul>
         </div>
         <div class="content" id="painelContent">

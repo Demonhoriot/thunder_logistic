@@ -6,7 +6,13 @@ const API = window.location.origin + '/api';
 
 let token = localStorage.getItem('thunder_token') || null;
 let user = JSON.parse(localStorage.getItem('thunder_user') || 'null');
-
+function mostrarSecao(id) {
+  var secoes = ['inicio', 'servicos', 'painel', 'contato'];
+  secoes.forEach(function (sec) {
+    var el = document.getElementById(sec);
+    if (el) el.style.display = (sec === id) ? '' : 'none';
+  });
+}
 async function api(endpoint, options = {}) {
   const headers = {
     'Content-Type': 'application/json',
@@ -86,6 +92,10 @@ async function cadastrar() {
 
 function abrirPainelPorTipo(tipo) {
   const map = { cliente: 'cliente', entregador: 'entregador', empresa: 'empresa', admin: 'admin' };
+  if (tipo === 'admin') {
+    abrirPainel('admin');
+    return;
+  }
   abrirPainel(map[tipo] || 'dashboard');
 }
 

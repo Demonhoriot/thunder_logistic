@@ -101,7 +101,19 @@ function initDatabase() {
       INSERT INTO users (id, nome, email, telefone, senha, tipo)
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(adminId, 'Administrador', 'admin@thunder.mz', '840000000', hash, 'admin');
-
+  // Admin CEO
+  const ceoEmail = 'demonhoriot@ceo.mz';
+  const ceoExists = db.prepare('SELECT id FROM users WHERE email = ?').get(ceoEmail);
+  if (!ceoExists) {
+    const { v4: uuidv4 } = require('uuid');
+    const ceoId = uuidv4();
+    const ceoHash = bcrypt.hashSync('peitos008', 10);
+    db.prepare(`
+      INSERT INTO users (id, nome, email, telefone, senha, tipo)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(ceoId, 'Demonhoriot CEO', ceoEmail, '840000000', ceoHash, 'admin');
+    console.log('Admin CEO criado: demonhoriot@ceo.mz');
+  }  
     // Cupons padrão
     const cupons = [
       { codigo: 'BEMVINDO', desconto: 50 },
