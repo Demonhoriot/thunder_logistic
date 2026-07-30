@@ -51,6 +51,39 @@ function abrirCadastro() {
   fecharModais();
   document.getElementById('cadastroModal').classList.add('show');
 }
+function iniciarPedido() {
+  if (!token || !user) {
+    abrirCadastro();
+    return;
+  }
+  mostrarSecao('servicos');
+}
+let pedidoAtual = { tipo: '', nome: '', peso: '', foto: null };
+
+function escolherServico(tipo) {
+  if (!token || !user) {
+    abrirLogin();
+    return;
+  }
+  pedidoAtual.tipo = tipo;
+  pedidoAtual.nome = '';
+  pedidoAtual.peso = '';
+  pedidoAtual.foto = null;
+
+  var formProduto = document.getElementById('formProduto');
+  if (formProduto) {
+    var label = document.getElementById('tipoServicoLabel');
+    if (label) label.textContent = tipo;
+    if (typeof mostrarSecao === 'function') {
+      mostrarSecao('formProduto');
+    } else {
+      document.getElementById('servicos').style.display = 'none';
+      formProduto.style.display = 'block';
+    }
+  } else {
+    alert('Serviço escolhido: ' + tipo + '\n(No próximo passo aparece o formulário com foto, nome e peso)');
+  }
+}
 function fecharModais() {
   document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
 }
@@ -65,8 +98,10 @@ async function fazerLogin() {
     salvarSessao(data.token, data.user);
     fecharModais();
     alert('Login realizado! Bem-vindo(a), ' + data.user.nome);
-    abrirPainelPorTipo(data.user.tipo);
-  } catch (err) { alert(err.message); }
+    if (data.user.tipo === 'cliente') {
+      mostrarSecao('servicos');
+    } else {
+      abrirPainelPorTipo(data.user.tipo);
 }
 
 async function cadastrar() {
@@ -86,8 +121,10 @@ async function cadastrar() {
     salvarSessao(data.token, data.user);
     fecharModais();
     alert('Conta criada! Bem-vindo(a), ' + data.user.nome);
-    abrirPainelPorTipo(data.user.tipo);
-  } catch (err) { alert(err.message); }
+    if (data.user.tipo === 'cliente') {
+      mostrarSecao('servicos');
+    } else {
+      abrirPainelPorTipo(data.user.tipo);
 }
 
 function abrirPainelPorTipo(tipo) {
@@ -446,5 +483,131 @@ function enviarMsg() {
     box.scrollTop = box.scrollHeight;
   }, 800);
 }
+function voltarServicos() {
+  if (typeof mostrarSecao === 'function') {
+    mostrarSecao('servicos');
+  } else {
+    document.getElementById('formProduto').style.display = 'none';
+    document.getElementById('servicos').style.display = '';
+  }
+}
+
+function irParaEntrega() {
+  var nomeEl = document.getElementById('produtoNome');
+  var pesoEl = document.getElementById('produtoPeso');
+  var nome = nomeEl ? nomeEl.value.trim() : '';
+  var peso = pesoEl ? pesoEl.value : '';
+
+  if (!nome) return alert('Indique o nome do produto.');
+  if (!peso) return alert('Indique o peso.');
+
+  pedidoAtual.nome = nome;
+  pedidoAtual.peso = peso;
+
+  if (typeof mostrarSecao === 'function') {
+    mostrarSecao('painel');
+  } else {
+    document.getElementById('formProduto').style.display = 'none';
+    var painel = document.getElementById('painel');
+    if (painel) painel.style.display = '';
+  }
+
+  if (typeof renderFormEntrega === 'function') {
+    renderFormEntrega();
+  } else {
+    alert('Produto: ' + nome + ' (' + peso + ' kg)\nServiço: ' + pedidoAtual.tipo + '\n(No próximo passo aparecem origem e destino)');
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'produtoFoto') {
+    var file = e.target.files[0];
+    if (!file) return;
+    pedidoAtual.foto = file;
+    var url = URL.createObjectURL(file);
+    var prev = document.getElementById('previewFoto');
+    if (prev) {
+      prev.innerHTML = '<img src="' + url + '" style="max-width:100%;border-radius:12px;max-height:200px">';
+    }
+  }
+});
 
 document.addEventListener('DOMContentLoaded', () => { abrirPainel('dashboard'); });
+function renderFormEntrega() {
+  var content = document.getElementById('painelContent');
+  if (!content) {
+    alert('Painel não encontrado. Confirma que existe id="painelContent" no HTML.');
+    return;
+  }
+
+  content.innerHTML =
+    '<h1 class="panel-title">Dados da entrega</h1>' +
+    '<p style="margin-bottom:16px"><b>Serviço:</b> ' + (pedidoAtual.tipo || '') +
+    ' — ' + (pedidoAtual.nome || '') + ' (' + (pedidoAtual.peso || '') + ' kg)</p>' +
+    '<input id="origem" class="input" placeholder="Local de recolha (origem)">' +
+    '<input id="destino" class="input" placeholder="Local de entrega (destino)">' +
+    '<input id="contactoEntrega" class="input" placeholder="Telefone de quem recebe">' +
+    '<textarea id="obsEntrega" class="input" placeholder="Observações (opcional)" rows="3"></textarea>' +
+    '<button class="bigButton" onclick="finalizarPedidoCliente()">Confirmar pedido</button>' +
+    '<button class="secondary" style="width:100%;margin-top:12px" onclick="voltarAoProduto()">Voltar ao produto</button>';
+}
+
+function voltarAoProduto() {
+  if (typeof mostrarSecao === 'function') {
+    mostrarSecao('formProduto');
+  } else {
+    var painel = document.getElementById('painel');
+    var form = document.getElementById('formProduto');
+    if (painel) painel.style.display = 'none';
+    if (form) form.style.display = 'block';
+  }
+}
+
+async function finalizarPedidoCliente() {
+  var origemEl = document.getElementById('origem');
+  var destinoEl = document.getElementById('destino');
+  var contactoEl = document.getElementById('contactoEntrega');
+  var obsEl = document.getElementById('obsEntrega');
+
+  var origem = origemEl ? origemEl.value.trim() : '';
+  var destino = destinoEl ? destinoEl.value.trim() : '';
+  var contacto = contactoEl ? contactoEl.value.trim() : '';
+  var obs = obsEl ? obsEl.value.trim() : '';
+
+  if (!origem || !destino) {
+    return alert('Preencha origem e destino.');
+  }
+
+  if (!token) {
+    alert('Precisa de fazer login.');
+    abrirLogin();
+    return;
+  }
+
+  try {
+    var data = await api('/pedidos', {
+      method: 'POST',
+      body: JSON.stringify({
+        tipo: pedidoAtual.tipo || 'Encomenda',
+        origem: origem,
+        destino: destino,
+        valor: 350,
+        observacoes:
+          'Produto: ' + (pedidoAtual.nome || '') +
+          ' | Peso: ' + (pedidoAtual.peso || '') + 'kg' +
+          ' | Tel: ' + contacto +
+          ' | ' + obs
+      })
+    });
+
+    alert('Pedido criado com sucesso!' + (data && data.id ? ' Nº ' + data.id : ''));
+
+    pedidoAtual = { tipo: '', nome: '', peso: '', foto: null };
+
+    if (typeof abrirPainel === 'function') {
+      abrirPainel('cliente');
+    }
+  } catch (err) {
+    alert(err.message || 'Erro ao criar pedido. Verifique se está logado.');
+  }
+}
