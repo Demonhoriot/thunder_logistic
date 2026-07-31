@@ -102,6 +102,10 @@ async function fazerLogin() {
       mostrarSecao('servicos');
     } else {
       abrirPainelPorTipo(data.user.tipo);
+    }
+  } catch (err) {
+    alert(err.message);
+  }
 }
 
 async function cadastrar() {
@@ -125,6 +129,10 @@ async function cadastrar() {
       mostrarSecao('servicos');
     } else {
       abrirPainelPorTipo(data.user.tipo);
+    }
+  } catch (err) {
+    alert(err.message);
+  }
 }
 
 function abrirPainelPorTipo(tipo) {
