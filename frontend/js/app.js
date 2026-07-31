@@ -7,7 +7,7 @@ const API = window.location.origin + '/api';
 let token = localStorage.getItem('thunder_token') || null;
 let user = JSON.parse(localStorage.getItem('thunder_user') || 'null');
 function mostrarSecao(id) {
-  var secoes = ['inicio', 'servicos', 'painel', 'contato'];
+  var secoes = ['inicio', 'servicos', 'painel', 'contato', 'formProduto'];
   secoes.forEach(function (sec) {
     var el = document.getElementById(sec);
     if (el) el.style.display = (sec === id) ? '' : 'none';
@@ -53,7 +53,7 @@ function abrirCadastro() {
 }
 function iniciarPedido() {
   if (!token || !user) {
-    abrirCadastro();
+    abrirLogin();
     return;
   }
   mostrarSecao('servicos');

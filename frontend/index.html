@@ -15,12 +15,10 @@
   <nav>
     <div class="container nav-container">
       <div class="logo"><span>THUNDER</span> <span>LOGISTIC</span></div>
-      <div class="menu" id="menu">
-               <a href="#inicio" onclick="mostrarSecao('inicio'); return false;">Início</a>
-        <a href="#servicos" onclick="mostrarSecao('servicos'); return false;">Serviços</a>
-        <a href="#painel" onclick="mostrarSecao('painel'); return false;">Painel</a>
-        <a href="#contato" onclick="mostrarSecao('contato'); return false;">Contato</a>
+            <div class="menu" id="menu">
+        <a href="#inicio" onclick="mostrarSecao('inicio'); return false;">Início</a>
         <button class="btn-login" onclick="abrirLogin()">Entrar</button>
+      </div>
       </div>
       <div class="hamburger" id="hamburger" onclick="toggleMenu()">
         <span></span><span></span><span></span>
@@ -40,20 +38,6 @@
         </div>
       </div>
       <div>
-        <div class="phone">
-          <div class="phone-top">Thunder Logistic</div>
-          <div class="phone-body">
-            <h2>Dashboard em Tempo Real</h2>
-            <div class="stat-grid">
-              <div class="card"><h2>1.240</h2><span>Pedidos Hoje</span></div>
-              <div class="card"><h2>842</h2><span>Entregadores</span></div>
-              <div class="card"><h2>318</h2><span>Empresas</span></div>
-              <div class="card"><h2>98%</h2><span>Satisfação</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- SERVIÇOS -->
@@ -131,12 +115,10 @@
         <div class="sidebar">
           <h2>THUNDER</h2>
           <ul>
-            <li class="active" onclick="abrirPainel('dashboard')">🏠 Dashboard</li>
-            <li onclick="abrirPainel('cliente')">👤 Cliente</li>
-            <li onclick="abrirPainel('entregador')">🏍 Entregador</li>
-            <li onclick="abrirPainel('empresa')">🏢 Empresa</li>
-            <li onclick="abrirPainel('carteira')">💰 Carteira</li>
-            <li onclick="abrirPainel('rastreamento')">📍 Rastreamento</li>
+                       <li onclick="mostrarSecao('servicos')">🛍 Serviços</li>
+            <li onclick="abrirPainel('cliente'); mostrarSecao('painel')">📦 Meus Pedidos</li>
+            <li onclick="abrirPainel('carteira'); mostrarSecao('painel')">💰 Carteira</li>
+            <li onclick="abrirPainel('rastreamento'); mostrarSecao('painel')">📍 Rastreio</li>
           </ul>
         </div>
         <div class="content" id="painelContent">
