@@ -619,3 +619,6 @@ async function finalizarPedidoCliente() {
     alert(err.message || 'Erro ao criar pedido. Verifique se está logado.');
   }
 }
+document.addEventListener('DOMContentLoaded', function () {
+  mostrarSecao('inicio');
+});
