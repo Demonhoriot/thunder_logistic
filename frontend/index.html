@@ -29,7 +29,7 @@
     </div>
   </nav>
 
-  <!-- HERO (página inicial curta + imagem do entregador de fundo) -->
+  <!-- HERO -->
   <section class="hero" id="inicio">
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
@@ -119,9 +119,9 @@
           <h2>THUNDER</h2>
           <ul>
             <li onclick="mostrarSecao('servicos')">🛍 Serviços</li>
-            <li onclick="abrirPainel('cliente'); mostrarSecao('painel')">📦 Meus Pedidos</li>
-            <li onclick="abrirPainel('carteira'); mostrarSecao('painel')">💰 Carteira</li>
-            <li onclick="abrirPainel('rastreamento'); mostrarSecao('painel')">📍 Rastreio</li>
+            <li onclick="abrirPainel('cliente')">📦 Meus Pedidos</li>
+            <li onclick="abrirPainel('carteira')">💰 Carteira</li>
+            <li onclick="abrirPainel('rastreamento')">📍 Rastreio</li>
           </ul>
         </div>
         <div class="content" id="painelContent">
@@ -143,55 +143,57 @@
     <p class="copyright">© 2026 Thunder Logistic EI — Todos os direitos reservados</p>
   </footer>
 
-  <!-- MODAL LOGIN -->
-  <div class="modal" id="loginModal">
-    <div class="modal-box">
+  <!-- MODAL AUTH PROFISSIONAL (Login / Cadastro) -->
+  <div class="modal" id="authModal">
+    <div class="modal-box auth-box">
       <button class="close-modal" onclick="fecharModais()">×</button>
-      <h2>Entrar</h2>
-      <input class="input" id="loginEmail" type="text" placeholder="Telefone ou Email">
-      <input class="input" id="loginSenha" type="password" placeholder="Senha">
-      <button class="bigButton" onclick="fazerLogin()">Entrar</button>
-      <div class="modal-link">
-        <a href="#" onclick="event.preventDefault(); abrirCadastro()">Criar Conta</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- MODAL CADASTRO -->
-  <div class="modal" id="cadastroModal">
-    <div class="modal-box">
-      <button class="close-modal" onclick="fecharModais()">×</button>
-      <h2>Criar Conta</h2>
-      <input class="input" id="cadNome" placeholder="Nome completo">
-      <input class="input" id="cadTelefone" placeholder="Telefone">
-      <input class="input" id="cadEmail" placeholder="Email">
-      <select class="input" id="cadTipo">
-        <option value="cliente">Cliente</option>
-        <option value="entregador">Entregador</option>
-        <option value="empresa">Empresa</option>
-      </select>
-      <input class="input" id="cadSenha" type="password" placeholder="Senha">
-      <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar Senha">
-      <button class="bigButton" onclick="cadastrar()">Cadastrar</button>
-      <div class="modal-link">
-        <a href="#" onclick="event.preventDefault(); abrirLogin()">Já tenho conta</a>
+      <div class="auth-header">
+        <div class="auth-badge">Thunder Logistic</div>
+        <h2 id="authTitle">Entrar para pedir</h2>
+        <p id="authSubtitle">Acede à tua conta ou cria uma em segundos.</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" id="tabLogin" onclick="mostrarAuthTab('login')">Entrar</button>
+        <button type="button" class="auth-tab" id="tabCadastro" onclick="mostrarAuthTab('cadastro')">Criar conta</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="authLogin" class="auth-panel">
+        <input class="input" id="loginEmail" type="text" placeholder="Telefone ou Email">
+        <input class="input" id="loginSenha" type="password" placeholder="Senha">
+        <button class="bigButton" onclick="fazerLogin()">Entrar e continuar</button>
+      </div>
+
+      <!-- CADASTRO -->
+      <div id="authCadastro" class="auth-panel" style="display:none">
+        <input class="input" id="cadNome" placeholder="Nome completo">
+        <input class="input" id="cadTelefone" placeholder="Telefone">
+        <input class="input" id="cadEmail" placeholder="Email">
+        <select class="input" id="cadTipo">
+          <option value="cliente">Cliente</option>
+          <option value="entregador">Entregador</option>
+          <option value="empresa">Empresa</option>
+        </select>
+        <input class="input" id="cadSenha" type="password" placeholder="Senha">
+        <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar Senha">
+        <button class="bigButton" onclick="cadastrar()">Criar conta e continuar</button>
       </div>
     </div>
   </div>
 
   <script src="js/app.js"></script>
   <script>
-    // Fallback se app.js não carregar
     if (typeof abrirLogin !== 'function') {
       window.abrirLogin = function () {
-        var m = document.getElementById('loginModal');
+        var m = document.getElementById('authModal');
         if (m) m.classList.add('show');
       };
       window.abrirCadastro = function () {
-        var l = document.getElementById('loginModal');
-        var c = document.getElementById('cadastroModal');
-        if (l) l.classList.remove('show');
-        if (c) c.classList.add('show');
+        var m = document.getElementById('authModal');
+        if (m) m.classList.add('show');
+        if (typeof mostrarAuthTab === 'function') mostrarAuthTab('cadastro');
       };
       window.fecharModais = function () {
         document.querySelectorAll('.modal').forEach(function (m) {
