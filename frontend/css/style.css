@@ -507,3 +507,36 @@ footer p{opacity:.8;font-size:14px;line-height:1.6}
   }
   .logo{font-size:20px}
 }
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.menu-always {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,.45);
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-login {
+  background: #FFD400;
+  color: #111;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+}
