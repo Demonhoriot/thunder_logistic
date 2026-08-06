@@ -424,3 +424,48 @@ footer p{opacity:.8;font-size:14px;line-height:1.6}
   .grid-4{grid-template-columns:1fr}
   .auth-box{padding:24px 20px 28px}
 }
+/* Secondary em secções claras (não no hero) */
+.services .secondary,
+#formProduto .secondary,
+.dashboard-preview .secondary,
+.modal .secondary{
+  background:#fff;
+  color:var(--primary);
+  border:1.5px solid #dbe4ff;
+  box-shadow:none;
+}
+
+/* Toast profissional (substitui alerts feios) */
+.toast{
+  position:fixed;
+  bottom:28px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--dark);
+  color:#fff;
+  padding:14px 22px;
+  border-radius:14px;
+  font-weight:600;
+  font-size:14px;
+  z-index:100000;
+  opacity:0;
+  transition:.3s;
+  box-shadow:0 16px 40px rgba(0,0,0,.25);
+  max-width:90%;
+  text-align:center;
+}
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+.toast.ok{background:#0f766e}
+.toast.err{background:#b91c1c}
+
+/* Botão loading */
+.bigButton.loading{
+  opacity:.7;
+  pointer-events:none;
+}
+.bigButton.loading::after{
+  content:"…";
+}

@@ -143,7 +143,7 @@
     <p class="copyright">© 2026 Thunder Logistic EI — Todos os direitos reservados</p>
   </footer>
 
-  <!-- MODAL AUTH PROFISSIONAL (Login / Cadastro) -->
+  <!-- MODAL AUTH PROFISSIONAL -->
   <div class="modal" id="authModal">
     <div class="modal-box auth-box">
       <button class="close-modal" onclick="fecharModais()">×</button>
@@ -161,24 +161,24 @@
 
       <!-- LOGIN -->
       <div id="authLogin" class="auth-panel">
-        <input class="input" id="loginEmail" type="text" placeholder="Telefone ou Email">
-        <input class="input" id="loginSenha" type="password" placeholder="Senha">
-        <button class="bigButton" onclick="fazerLogin()">Entrar e continuar</button>
+        <input class="input" id="loginEmail" type="text" placeholder="Telefone ou Email" autocomplete="username">
+        <input class="input" id="loginSenha" type="password" placeholder="Senha" autocomplete="current-password">
+        <button class="bigButton" id="btnFazerLogin" onclick="fazerLogin()">Entrar e continuar</button>
       </div>
 
       <!-- CADASTRO -->
       <div id="authCadastro" class="auth-panel" style="display:none">
-        <input class="input" id="cadNome" placeholder="Nome completo">
-        <input class="input" id="cadTelefone" placeholder="Telefone">
-        <input class="input" id="cadEmail" placeholder="Email">
+        <input class="input" id="cadNome" placeholder="Nome completo" autocomplete="name">
+        <input class="input" id="cadTelefone" placeholder="Telefone" autocomplete="tel">
+        <input class="input" id="cadEmail" placeholder="Email" autocomplete="email">
         <select class="input" id="cadTipo">
           <option value="cliente">Cliente</option>
           <option value="entregador">Entregador</option>
           <option value="empresa">Empresa</option>
         </select>
-        <input class="input" id="cadSenha" type="password" placeholder="Senha">
-        <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar Senha">
-        <button class="bigButton" onclick="cadastrar()">Criar conta e continuar</button>
+        <input class="input" id="cadSenha" type="password" placeholder="Senha" autocomplete="new-password">
+        <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar Senha" autocomplete="new-password">
+        <button class="bigButton" id="btnCadastrar" onclick="cadastrar()">Criar conta e continuar</button>
       </div>
     </div>
   </div>

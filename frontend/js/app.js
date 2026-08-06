@@ -1,5 +1,6 @@
 /* =========================================================
    THUNDER LOGISTIC — Frontend (conectado à API)
+   Versão profissional com auth modal, toast e loading
    ========================================================= */
 
 const API = window.location.origin + '/api';
@@ -8,26 +9,48 @@ let token = localStorage.getItem('thunder_token') || null;
 let user = JSON.parse(localStorage.getItem('thunder_user') || 'null');
 let pedidoAtual = { tipo: '', nome: '', peso: '', foto: null };
 
+/* ---------- Toast profissional ---------- */
+function mostrarToast(msg, tipo) {
+  var old = document.querySelector('.toast');
+  if (old) old.remove();
+  var t = document.createElement('div');
+  t.className = 'toast ' + (tipo || '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function () { t.classList.add('show'); }, 10);
+  setTimeout(function () {
+    t.classList.remove('show');
+    setTimeout(function () { t.remove(); }, 300);
+  }, 2800);
+}
+
 /* ---------- Secções (footer nunca esconde) ---------- */
 function mostrarSecao(id) {
-  const secoes = ['inicio', 'servicos', 'painel', 'formProduto'];
+  var secoes = ['inicio', 'servicos', 'painel', 'formProduto'];
   secoes.forEach(function (sec) {
-    const el = document.getElementById(sec);
+    var el = document.getElementById(sec);
     if (el) el.style.display = (sec === id) ? '' : 'none';
   });
-  const footer = document.getElementById('contato');
+  var footer = document.getElementById('contato');
   if (footer) footer.style.display = '';
 }
 
 /* ---------- API helper ---------- */
-async function api(endpoint, options = {}) {
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: 'Bearer ' + token } : {}),
-    ...options.headers
+async function api(endpoint, options) {
+  options = options || {};
+  var headers = {
+    'Content-Type': 'application/json'
   };
-  const res = await fetch(API + endpoint, { ...options, headers });
-  const data = await res.json().catch(() => ({}));
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  if (options.headers) {
+    for (var k in options.headers) headers[k] = options.headers[k];
+  }
+  var res = await fetch(API + endpoint, {
+    method: options.method || 'GET',
+    headers: headers,
+    body: options.body || undefined
+  });
+  var data = await res.json().catch(function () { return {}; });
   if (!res.ok) throw new Error(data.erro || data.message || 'Erro na requisição');
   return data;
 }
@@ -47,11 +70,11 @@ function logout() {
   localStorage.removeItem('thunder_user');
   atualizarBotaoAuth();
   mostrarSecao('inicio');
-  alert('Sessão terminada.');
+  mostrarToast('Sessão terminada.', 'ok');
 }
 
 function atualizarBotaoAuth() {
-  const btn = document.getElementById('btnAuth');
+  var btn = document.getElementById('btnAuth');
   if (!btn) return;
   if (user) {
     btn.textContent = user.nome ? user.nome.split(' ')[0] : 'Conta';
@@ -70,7 +93,7 @@ function atualizarBotaoAuth() {
 }
 
 function toggleMenu() {
-  const menu = document.getElementById('menu');
+  var menu = document.getElementById('menu');
   if (menu) menu.classList.toggle('open');
 }
 
@@ -82,12 +105,12 @@ function fecharModais() {
 }
 
 function mostrarAuthTab(tab) {
-  const loginPanel = document.getElementById('authLogin');
-  const cadPanel = document.getElementById('authCadastro');
-  const tabLogin = document.getElementById('tabLogin');
-  const tabCadastro = document.getElementById('tabCadastro');
-  const title = document.getElementById('authTitle');
-  const subtitle = document.getElementById('authSubtitle');
+  var loginPanel = document.getElementById('authLogin');
+  var cadPanel = document.getElementById('authCadastro');
+  var tabLogin = document.getElementById('tabLogin');
+  var tabCadastro = document.getElementById('tabCadastro');
+  var title = document.getElementById('authTitle');
+  var subtitle = document.getElementById('authSubtitle');
 
   if (!loginPanel || !cadPanel) return;
 
@@ -111,20 +134,42 @@ function mostrarAuthTab(tab) {
 function abrirLogin() {
   fecharModais();
   mostrarAuthTab('login');
-  const m = document.getElementById('authModal');
+  var m = document.getElementById('authModal');
   if (m) m.classList.add('show');
+  setTimeout(function () {
+    var el = document.getElementById('loginEmail');
+    if (el) el.focus();
+  }, 100);
 }
 
 function abrirCadastro() {
   fecharModais();
   mostrarAuthTab('cadastro');
-  const m = document.getElementById('authModal');
+  var m = document.getElementById('authModal');
   if (m) m.classList.add('show');
+  setTimeout(function () {
+    var el = document.getElementById('cadNome');
+    if (el) el.focus();
+  }, 100);
 }
 
 window.onclick = function (e) {
   if (e.target.classList.contains('modal')) fecharModais();
 };
+
+/* Enter submete o formulário activo do modal */
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Enter') return;
+  var modal = document.getElementById('authModal');
+  if (!modal || !modal.classList.contains('show')) return;
+  e.preventDefault();
+  var loginPanel = document.getElementById('authLogin');
+  if (loginPanel && loginPanel.style.display !== 'none') {
+    fazerLogin();
+  } else {
+    cadastrar();
+  }
+});
 
 /* ---------- Fluxo de pedido ---------- */
 function iniciarPedido() {
@@ -142,13 +187,13 @@ function escolherServico(tipo) {
   }
   pedidoAtual = { tipo: tipo, nome: '', peso: '', foto: null };
 
-  const label = document.getElementById('tipoServicoLabel');
+  var label = document.getElementById('tipoServicoLabel');
   if (label) label.textContent = tipo;
 
-  const nomeEl = document.getElementById('produtoNome');
-  const pesoEl = document.getElementById('produtoPeso');
-  const fotoEl = document.getElementById('produtoFoto');
-  const prev = document.getElementById('previewFoto');
+  var nomeEl = document.getElementById('produtoNome');
+  var pesoEl = document.getElementById('produtoPeso');
+  var fotoEl = document.getElementById('produtoFoto');
+  var prev = document.getElementById('previewFoto');
   if (nomeEl) nomeEl.value = '';
   if (pesoEl) pesoEl.value = '';
   if (fotoEl) fotoEl.value = '';
@@ -162,13 +207,13 @@ function voltarServicos() {
 }
 
 function irParaEntrega() {
-  const nomeEl = document.getElementById('produtoNome');
-  const pesoEl = document.getElementById('produtoPeso');
-  const nome = nomeEl ? nomeEl.value.trim() : '';
-  const peso = pesoEl ? pesoEl.value : '';
+  var nomeEl = document.getElementById('produtoNome');
+  var pesoEl = document.getElementById('produtoPeso');
+  var nome = nomeEl ? nomeEl.value.trim() : '';
+  var peso = pesoEl ? pesoEl.value : '';
 
-  if (!nome) return alert('Indique o nome do produto.');
-  if (!peso) return alert('Indique o peso.');
+  if (!nome) return mostrarToast('Indique o nome do produto.', 'err');
+  if (!peso) return mostrarToast('Indique o peso.', 'err');
 
   pedidoAtual.nome = nome;
   pedidoAtual.peso = peso;
@@ -182,7 +227,7 @@ function voltarAoProduto() {
 }
 
 function renderFormEntrega() {
-  const content = document.getElementById('painelContent');
+  var content = document.getElementById('painelContent');
   if (!content) return;
 
   content.innerHTML =
@@ -198,20 +243,25 @@ function renderFormEntrega() {
 }
 
 async function finalizarPedidoCliente() {
-  const origem = (document.getElementById('origem') || {}).value?.trim() || '';
-  const destino = (document.getElementById('destino') || {}).value?.trim() || '';
-  const contacto = (document.getElementById('contactoEntrega') || {}).value?.trim() || '';
-  const obs = (document.getElementById('obsEntrega') || {}).value?.trim() || '';
+  var origemEl = document.getElementById('origem');
+  var destinoEl = document.getElementById('destino');
+  var contactoEl = document.getElementById('contactoEntrega');
+  var obsEl = document.getElementById('obsEntrega');
 
-  if (!origem || !destino) return alert('Preencha origem e destino.');
+  var origem = origemEl ? origemEl.value.trim() : '';
+  var destino = destinoEl ? destinoEl.value.trim() : '';
+  var contacto = contactoEl ? contactoEl.value.trim() : '';
+  var obs = obsEl ? obsEl.value.trim() : '';
+
+  if (!origem || !destino) return mostrarToast('Preencha origem e destino.', 'err');
   if (!token) {
-    alert('Precisa de fazer login.');
+    mostrarToast('Precisa de fazer login.', 'err');
     abrirLogin();
     return;
   }
 
   try {
-    const data = await api('/pedidos', {
+    var data = await api('/pedidos', {
       method: 'POST',
       body: JSON.stringify({
         tipo: pedidoAtual.tipo || 'Encomenda',
@@ -226,71 +276,93 @@ async function finalizarPedidoCliente() {
       })
     });
 
-    const id = (data.pedido && data.pedido.id) || data.id || '';
-    alert('Pedido criado com sucesso!' + (id ? ' Nº ' + id : ''));
+    var id = (data.pedido && data.pedido.id) || data.id || '';
+    mostrarToast('Pedido criado com sucesso!' + (id ? ' Nº ' + id : ''), 'ok');
     pedidoAtual = { tipo: '', nome: '', peso: '', foto: null };
     abrirPainel('cliente');
   } catch (err) {
-    alert(err.message || 'Erro ao criar pedido.');
+    mostrarToast(err.message || 'Erro ao criar pedido.', 'err');
   }
 }
 
 /* ---------- Auth ---------- */
 async function fazerLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const senha = document.getElementById('loginSenha').value;
-  if (!email || !senha) return alert('Preencha email/telefone e senha.');
+  var emailEl = document.getElementById('loginEmail');
+  var senhaEl = document.getElementById('loginSenha');
+  var email = emailEl ? emailEl.value.trim() : '';
+  var senha = senhaEl ? senhaEl.value : '';
+  var btn = document.getElementById('btnFazerLogin') || document.querySelector('#authLogin .bigButton');
+
+  if (!email || !senha) {
+    mostrarToast('Preencha email/telefone e senha.', 'err');
+    return;
+  }
+  if (btn) btn.classList.add('loading');
   try {
-    const data = await api('/auth/login', {
+    var data = await api('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email: email, senha: senha })
     });
     salvarSessao(data.token, data.user);
     fecharModais();
-    alert('Login realizado! Bem-vindo(a), ' + data.user.nome);
+    mostrarToast('Bem-vindo(a), ' + data.user.nome, 'ok');
     if (data.user.tipo === 'cliente') {
       mostrarSecao('servicos');
     } else {
       abrirPainelPorTipo(data.user.tipo);
     }
   } catch (err) {
-    alert(err.message);
+    mostrarToast(err.message || 'Erro no login', 'err');
+  } finally {
+    if (btn) btn.classList.remove('loading');
   }
 }
 
 async function cadastrar() {
-  const nome = document.getElementById('cadNome').value.trim();
-  const telefone = document.getElementById('cadTelefone').value.trim();
-  const email = document.getElementById('cadEmail').value.trim();
-  const senha = document.getElementById('cadSenha').value;
-  const conf = document.getElementById('cadConfirmar').value;
-  const tipoEl = document.getElementById('cadTipo');
-  const tipo = (tipoEl && tipoEl.value) || 'cliente';
+  var nome = (document.getElementById('cadNome') || {}).value || '';
+  nome = nome.trim();
+  var telefone = (document.getElementById('cadTelefone') || {}).value || '';
+  telefone = telefone.trim();
+  var email = (document.getElementById('cadEmail') || {}).value || '';
+  email = email.trim();
+  var senha = (document.getElementById('cadSenha') || {}).value || '';
+  var conf = (document.getElementById('cadConfirmar') || {}).value || '';
+  var tipoEl = document.getElementById('cadTipo');
+  var tipo = (tipoEl && tipoEl.value) || 'cliente';
+  var btn = document.getElementById('btnCadastrar') || document.querySelector('#authCadastro .bigButton');
 
-  if (!nome || !email || !senha) return alert('Preencha os campos obrigatórios.');
-  if (senha !== conf) return alert('As senhas não coincidem.');
-
+  if (!nome || !email || !senha) {
+    mostrarToast('Preencha os campos obrigatórios.', 'err');
+    return;
+  }
+  if (senha !== conf) {
+    mostrarToast('As senhas não coincidem.', 'err');
+    return;
+  }
+  if (btn) btn.classList.add('loading');
   try {
-    const data = await api('/auth/register', {
+    var data = await api('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ nome: nome, email: email, telefone: telefone, senha: senha, tipo: tipo })
     });
     salvarSessao(data.token, data.user);
     fecharModais();
-    alert('Conta criada! Bem-vindo(a), ' + data.user.nome);
+    mostrarToast('Conta criada! Bem-vindo(a), ' + data.user.nome, 'ok');
     if (data.user.tipo === 'cliente') {
       mostrarSecao('servicos');
     } else {
       abrirPainelPorTipo(data.user.tipo);
     }
   } catch (err) {
-    alert(err.message);
+    mostrarToast(err.message || 'Erro no registo', 'err');
+  } finally {
+    if (btn) btn.classList.remove('loading');
   }
 }
 
 /* ---------- Painel ---------- */
 function abrirPainelPorTipo(tipo) {
-  const map = {
+  var map = {
     cliente: 'cliente',
     entregador: 'entregador',
     empresa: 'empresa',
@@ -306,16 +378,16 @@ function abrirPainel(tipo) {
   document.querySelectorAll('.sidebar li').forEach(function (li) {
     li.classList.remove('active');
   });
-  const items = document.querySelectorAll('.sidebar li');
-  const mapIndex = { cliente: 1, carteira: 2, rastreamento: 3 };
+  var items = document.querySelectorAll('.sidebar li');
+  var mapIndex = { cliente: 1, carteira: 2, rastreamento: 3 };
   if (mapIndex[tipo] !== undefined && items[mapIndex[tipo]]) {
     items[mapIndex[tipo]].classList.add('active');
   }
 
-  const content = document.getElementById('painelContent');
+  var content = document.getElementById('painelContent');
   if (!content) return;
 
-  const renderers = {
+  var renderers = {
     cliente: renderCliente,
     entregador: renderEntregador,
     empresa: renderEmpresa,
@@ -324,7 +396,7 @@ function abrirPainel(tipo) {
     admin: renderAdmin
   };
 
-  const fn = renderers[tipo] || renderCliente;
+  var fn = renderers[tipo] || renderCliente;
   fn()
     .then(function (html) {
       content.innerHTML = html;
@@ -341,9 +413,9 @@ async function renderCliente() {
     return '<h1 class="panel-title">Área do Cliente</h1><p>Faça login como <b>cliente</b>.</p>' +
       '<button class="primary" onclick="abrirLogin()">Entrar</button>';
   }
-  const me = await api('/auth/me');
-  const pedidos = await api('/pedidos');
-  const pedidosHtml = (pedidos || []).map(function (p) {
+  var me = await api('/auth/me');
+  var pedidos = await api('/pedidos');
+  var pedidosHtml = (pedidos || []).map(function (p) {
     return '<div class="pedido-card"><h3>Pedido #' + p.id + '</h3>' +
       '<p><b>Serviço:</b> ' + p.tipo + '</p><p><b>Origem:</b> ' + p.origem + '</p>' +
       '<p><b>Destino:</b> ' + p.destino + '</p><p><b>Valor:</b> ' + p.valor + ' MT</p>' +
@@ -366,19 +438,19 @@ async function renderEntregador() {
     return '<h1 class="panel-title">Área do Entregador</h1><p>Faça login como <b>entregador</b>.</p>' +
       '<button class="primary" onclick="abrirLogin()">Entrar</button>';
   }
-  const me = await api('/entregadores/me');
-  const planos = await api('/entregadores/planos');
-  let disponiveis = [];
-  try { disponiveis = await api('/pedidos/disponiveis/lista'); } catch (_) {}
+  var me = await api('/entregadores/me');
+  var planos = await api('/entregadores/planos');
+  var disponiveis = [];
+  try { disponiveis = await api('/pedidos/disponiveis/lista'); } catch (e) {}
 
-  const planosHtml = (planos || []).map(function (p) {
+  var planosHtml = (planos || []).map(function (p) {
     return '<div class="plan-card"><h3>' + p.nome + '</h3>' +
       '<h2 style="color:var(--primary);margin:8px 0">' + p.valor + ' MT</h2>' +
       '<p>' + p.entregas + ' entregas</p>' +
       '<button class="primary btn-sm" style="margin-top:12px;width:100%" onclick="comprarPlano(\'' + p.nome + '\')">Comprar</button></div>';
   }).join('');
 
-  const pedidosHtml = (disponiveis || []).map(function (p) {
+  var pedidosHtml = (disponiveis || []).map(function (p) {
     return '<div class="pedido-card" style="border-left:5px solid var(--primary)">' +
       '<h3>Pedido #' + p.id + '</h3><p>' + p.tipo + ' — ' + p.origem + ' → ' + p.destino + '</p>' +
       '<p><b>' + p.valor + ' MT</b></p>' +
@@ -402,9 +474,9 @@ async function renderEmpresa() {
     return '<h1 class="panel-title">Área da Empresa</h1><p>Faça login como <b>empresa</b>.</p>' +
       '<button class="primary" onclick="abrirLogin()">Entrar</button>';
   }
-  const me = await api('/empresas/me');
-  const produtos = me.produtos || [];
-  const produtosHtml = produtos.map(function (p) {
+  var me = await api('/empresas/me');
+  var produtos = me.produtos || [];
+  var produtosHtml = produtos.map(function (p) {
     return '<div class="product-card"><h3>' + p.nome + '</h3><p>Preço: <b>' + p.preco + ' MT</b></p>' +
       '<button class="primary btn-sm" onclick="editarProduto(\'' + p.id + '\',\'' + p.nome + '\',' + p.preco + ')">Editar</button> ' +
       '<button class="secondary btn-sm" onclick="eliminarProduto(\'' + p.id + '\')">Eliminar</button></div>';
@@ -428,13 +500,13 @@ async function renderCarteira() {
     return '<h1 class="panel-title">Carteira Thunder</h1><p>Faça login como <b>cliente</b>.</p>' +
       '<button class="primary" onclick="abrirLogin()">Entrar</button>';
   }
-  const data = await api('/carteira');
-  const cuponsHtml = (data.cupons || []).map(function (c) {
+  var data = await api('/carteira');
+  var cuponsHtml = (data.cupons || []).map(function (c) {
     return '<div class="cupom-card"><h3>' + c.codigo + '</h3><p>Desconto: ' + c.desconto + ' MT ' +
       (c.usado ? '(já usado)' : '') + '</p>' +
       (!c.usado ? '<button class="primary btn-sm" onclick="usarCupom(\'' + c.codigo + '\')">Usar</button>' : '') + '</div>';
   }).join('');
-  const extratoHtml = (data.extrato || []).map(function (e) {
+  var extratoHtml = (data.extrato || []).map(function (e) {
     return '<div style="background:#fff;padding:12px 16px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between">' +
       '<span><b>' + e.tipo + '</b></span><span>' + e.valor + ' MT</span></div>';
   }).join('') || '<p style="color:#666">Sem movimentos.</p>';
@@ -473,8 +545,8 @@ async function renderAdmin() {
       '<p>Faça login como administrador.</p>' +
       '<button class="primary" onclick="abrirLogin()">Entrar</button>';
   }
-  const d = await api('/admin/dashboard');
-  const recentesHtml = (d.recentes || []).map(function (p) {
+  var d = await api('/admin/dashboard');
+  var recentesHtml = (d.recentes || []).map(function (p) {
     return '<tr><td>' + p.id + '</td><td>' + p.cliente + '</td><td>' + p.tipo + '</td>' +
       '<td>' + p.valor + ' MT</td><td>' + p.status + '</td></tr>';
   }).join('') || '<tr><td colspan="5">Sem pedidos</td></tr>';
@@ -495,142 +567,146 @@ async function renderAdmin() {
     '<p style="margin-top:20px"><button class="secondary" onclick="logout()">Sair</button></p>';
 }
 
+/* ---------- Acções API ---------- */
 async function comprarPlano(nome) {
   try {
-    const data = await api('/entregadores/comprar-plano', {
+    var data = await api('/entregadores/comprar-plano', {
       method: 'POST',
       body: JSON.stringify({ plano: nome })
     });
-    alert(data.mensagem);
+    mostrarToast(data.mensagem || 'Plano comprado.', 'ok');
     abrirPainel('entregador');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function toggleOnline() {
   try {
-    const data = await api('/entregadores/toggle-online', { method: 'POST' });
-    alert(data.mensagem);
+    var data = await api('/entregadores/toggle-online', { method: 'POST' });
+    mostrarToast(data.mensagem || 'Estado actualizado.', 'ok');
     abrirPainel('entregador');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function aceitarPedido(id) {
   try {
-    const data = await api('/pedidos/' + id + '/aceitar', { method: 'POST' });
-    alert(data.mensagem);
+    var data = await api('/pedidos/' + id + '/aceitar', { method: 'POST' });
+    mostrarToast(data.mensagem || 'Pedido aceite.', 'ok');
     abrirPainel('entregador');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function adicionarProduto() {
-  const nomeEl = document.getElementById('produtoNomeEmp');
-  const precoEl = document.getElementById('produtoPreco');
-  const nome = nomeEl ? nomeEl.value.trim() : '';
-  const preco = precoEl ? precoEl.value : '';
-  if (!nome || !preco) return alert('Preencha nome e preço.');
+  var nomeEl = document.getElementById('produtoNomeEmp');
+  var precoEl = document.getElementById('produtoPreco');
+  var nome = nomeEl ? nomeEl.value.trim() : '';
+  var preco = precoEl ? precoEl.value : '';
+  if (!nome || !preco) return mostrarToast('Preencha nome e preço.', 'err');
   try {
     await api('/empresas/produtos', {
       method: 'POST',
       body: JSON.stringify({ nome: nome, preco: Number(preco) })
     });
+    mostrarToast('Produto adicionado.', 'ok');
     abrirPainel('empresa');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function eliminarProduto(id) {
   if (!confirm('Eliminar este produto?')) return;
   try {
     await api('/empresas/produtos/' + id, { method: 'DELETE' });
+    mostrarToast('Produto eliminado.', 'ok');
     abrirPainel('empresa');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function editarProduto(id, nomeAtual, precoAtual) {
-  const nome = prompt('Novo nome:', nomeAtual);
+  var nome = prompt('Novo nome:', nomeAtual);
   if (nome === null) return;
-  const preco = prompt('Novo preço:', precoAtual);
+  var preco = prompt('Novo preço:', precoAtual);
   if (preco === null) return;
   try {
     await api('/empresas/produtos/' + id, {
       method: 'PUT',
       body: JSON.stringify({ nome: nome, preco: Number(preco) })
     });
+    mostrarToast('Produto actualizado.', 'ok');
     abrirPainel('empresa');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function adicionarSaldo() {
-  const v = Number(prompt('Valor a adicionar (MT):'));
+  var v = Number(prompt('Valor a adicionar (MT):'));
   if (!v || v <= 0) return;
   try {
-    const data = await api('/carteira/adicionar', {
+    var data = await api('/carteira/adicionar', {
       method: 'POST',
       body: JSON.stringify({ valor: v })
     });
-    alert(data.mensagem);
+    mostrarToast(data.mensagem || 'Saldo adicionado.', 'ok');
     abrirPainel('carteira');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function levantarSaldo() {
-  const v = Number(prompt('Valor a levantar (MT):'));
+  var v = Number(prompt('Valor a levantar (MT):'));
   if (!v || v <= 0) return;
   try {
-    const data = await api('/carteira/levantar', {
+    var data = await api('/carteira/levantar', {
       method: 'POST',
       body: JSON.stringify({ valor: v })
     });
-    alert(data.mensagem);
+    mostrarToast(data.mensagem || 'Levantamento feito.', 'ok');
     abrirPainel('carteira');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function usarCupom(codigo) {
   try {
-    const data = await api('/carteira/cupom', {
+    var data = await api('/carteira/cupom', {
       method: 'POST',
       body: JSON.stringify({ codigo: codigo })
     });
-    alert(data.mensagem);
+    mostrarToast(data.mensagem || 'Cupom aplicado.', 'ok');
     abrirPainel('carteira');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 async function ativarPrime() {
   try {
-    const data = await api('/carteira/prime', { method: 'POST' });
-    alert(data.mensagem);
+    var data = await api('/carteira/prime', { method: 'POST' });
+    mostrarToast(data.mensagem || 'Thunder Prime activado.', 'ok');
     abrirPainel('carteira');
-  } catch (err) { alert(err.message); }
+  } catch (err) { mostrarToast(err.message, 'err'); }
 }
 
 function iniciarRastreamento() {
-  let tempo = 25;
-  let dist = 6.4;
-  const estados = [
+  var tempo = 25;
+  var dist = 6.4;
+  var estados = [
     { t: 25, s: 'Entregador a Caminho' },
     { t: 18, s: 'Pedido Recolhido' },
     { t: 10, s: 'Em Entrega' },
     { t: 0, s: 'Entregue' }
   ];
-  const interval = setInterval(function () {
+  var interval = setInterval(function () {
     tempo--;
     dist = Math.max(0, dist - 0.25);
-    const elT = document.getElementById('tempoEntrega');
+    var elT = document.getElementById('tempoEntrega');
     if (!elT) { clearInterval(interval); return; }
     elT.textContent = tempo + ' min';
     document.getElementById('distanciaEntrega').textContent = dist.toFixed(1) + ' km';
-    const est = estados.find(function (e) { return tempo <= e.t; }) || estados[0];
+    var est = estados.find(function (e) { return tempo <= e.t; }) || estados[0];
     document.getElementById('statusEntrega').textContent = est.s;
     if (tempo <= 0) {
       clearInterval(interval);
-      alert('Pedido entregue! 🎉');
+      mostrarToast('Pedido entregue!', 'ok');
     }
   }, 1000);
 }
 
 function abrirChat() {
-  const box = document.getElementById('janelaChat');
+  var box = document.getElementById('janelaChat');
   if (!box) return;
   box.innerHTML =
     '<div style="background:#fff;padding:20px;border-radius:14px;box-shadow:var(--shadow)">' +
@@ -641,10 +717,10 @@ function abrirChat() {
 }
 
 function enviarMsg() {
-  const textoEl = document.getElementById('textoChat');
-  const texto = textoEl ? textoEl.value.trim() : '';
+  var textoEl = document.getElementById('textoChat');
+  var texto = textoEl ? textoEl.value.trim() : '';
   if (!texto) return;
-  const box = document.getElementById('mensagens');
+  var box = document.getElementById('mensagens');
   if (!box) return;
   box.innerHTML += '<div style="margin-bottom:8px;padding:8px 12px;background:#fff;border-radius:8px"><b>Você:</b> ' + texto + '</div>';
   textoEl.value = '';
@@ -656,11 +732,11 @@ function enviarMsg() {
 
 document.addEventListener('change', function (e) {
   if (e.target && e.target.id === 'produtoFoto') {
-    const file = e.target.files[0];
+    var file = e.target.files[0];
     if (!file) return;
     pedidoAtual.foto = file;
-    const url = URL.createObjectURL(file);
-    const prev = document.getElementById('previewFoto');
+    var url = URL.createObjectURL(file);
+    var prev = document.getElementById('previewFoto');
     if (prev) {
       prev.innerHTML = '<img src="' + url + '" style="max-width:100%;border-radius:12px;max-height:200px" alt="Preview">';
     }
