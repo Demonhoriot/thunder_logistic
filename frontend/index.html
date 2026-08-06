@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THUNDER LOGISTIC — Entregas Rápidas em Moçambique</title>
-  <meta name="description" content="Thunder Logistic — entregas rápidas de comida, farmácia, supermercado e encomendas em Maputo. Rastreio em tempo real.">
+  <title>THUNDER LOGISTIC — Entregas em Maputo</title>
+  <meta name="description" content="Peça comida, farmácia, supermercado e encomendas em Maputo. Rastreio em tempo real.">
   <meta name="theme-color" content="#0057FF">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -19,9 +19,9 @@
       <div class="logo" onclick="mostrarSecao('inicio')">
         <span>THUNDER</span> <span>LOGISTIC</span>
       </div>
-      <div class="menu menu-always" id="menu">
-        <button class="btn-ghost" onclick="abrirLogin()">Entrar</button>
-        <button class="btn-login" onclick="abrirCadastro()">Cadastrar</button>
+      <div class="menu-right">
+        <button type="button" class="btn-ghost" onclick="abrirLogin()">Entrar</button>
+        <button type="button" class="btn-solid" onclick="abrirCadastro()">Cadastrar</button>
       </div>
     </div>
   </nav>
@@ -34,173 +34,145 @@
       <h1>Peça. Receba.<br>Simples.</h1>
       <p>Entregas rápidas em Maputo.</p>
       <div class="hero-buttons">
-        <button class="primary" onclick="iniciarPedido()">Pedir Agora</button>
-        <button class="secondary" onclick="abrirCadastro()">Ser Entregador</button>
+        <button type="button" class="primary" onclick="iniciarPedido()">Pedir Agora</button>
+        <button type="button" class="secondary" onclick="abrirLogin()">Já tenho conta</button>
       </div>
     </div>
   </section>
 
   <!-- SERVIÇOS -->
-  <section class="services" id="servicos" style="display:none">
-    <div class="container">
-      <div class="section-title">
-        <h2>Escolha o serviço</h2>
-        <p>O que precisa de entregar?</p>
+  <section class="page" id="servicos" style="display:none">
+    <div class="page-banner">
+      <div class="container">
+        <h1>Serviços</h1>
+        <p>Escolha o que precisa de entregar</p>
       </div>
+    </div>
+    <div class="container page-body">
       <div class="service-grid">
-        <div class="service" onclick="escolherServico('Comida')">
-          <div class="icon">🍔</div>
+        <button type="button" class="service" onclick="escolherServico('Comida')">
+          <span class="icon">🍔</span>
           <h3>Comida</h3>
           <p>Refeições e restaurantes</p>
-        </div>
-        <div class="service" onclick="escolherServico('Farmácia')">
-          <div class="icon">💊</div>
+        </button>
+        <button type="button" class="service" onclick="escolherServico('Farmácia')">
+          <span class="icon">💊</span>
           <h3>Farmácia</h3>
           <p>Medicamentos</p>
-        </div>
-        <div class="service" onclick="escolherServico('Supermercado')">
-          <div class="icon">🛒</div>
+        </button>
+        <button type="button" class="service" onclick="escolherServico('Supermercado')">
+          <span class="icon">🛒</span>
           <h3>Supermercado</h3>
           <p>Compras de casa</p>
-        </div>
-        <div class="service" onclick="escolherServico('Encomenda')">
-          <div class="icon">📦</div>
+        </button>
+        <button type="button" class="service" onclick="escolherServico('Encomenda')">
+          <span class="icon">📦</span>
           <h3>Encomenda</h3>
           <p>Pacotes e documentos</p>
-        </div>
-        <div class="service" onclick="escolherServico('Documentos')">
-          <div class="icon">📄</div>
+        </button>
+        <button type="button" class="service" onclick="escolherServico('Documentos')">
+          <span class="icon">📄</span>
           <h3>Documentos</h3>
           <p>Correspondência</p>
-        </div>
-        <div class="service" onclick="escolherServico('Outro')">
-          <div class="icon">📦</div>
+        </button>
+        <button type="button" class="service" onclick="escolherServico('Outro')">
+          <span class="icon">⚡</span>
           <h3>Outro</h3>
           <p>Outros envios</p>
-        </div>
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- FORMULÁRIO DO PRODUTO -->
-  <section id="formProduto" style="display:none; padding:100px 0 60px">
-    <div class="container" style="max-width:520px">
-      <h2 style="color:#0066FF; margin-bottom:24px">
-        Dados do produto — <span id="tipoServicoLabel"></span>
-      </h2>
+  <!-- FORMULÁRIO PRODUTO -->
+  <section class="page" id="formProduto" style="display:none">
+    <div class="page-banner">
+      <div class="container">
+        <h1>Dados do produto</h1>
+        <p id="tipoServicoLabel">—</p>
+      </div>
+    </div>
+    <div class="container page-body narrow">
+      <div class="card-form">
+        <label>Foto do produto</label>
+        <input type="file" id="produtoFoto" class="input" accept="image/*" capture="environment">
+        <div id="previewFoto"></div>
 
-      <label style="display:block; margin-bottom:6px; font-weight:600">Foto do produto</label>
-      <input type="file" id="produtoFoto" class="input" accept="image/*" capture="environment">
-      <div id="previewFoto" style="margin:12px 0"></div>
+        <label>Nome do produto</label>
+        <input type="text" id="produtoNome" class="input" placeholder="Ex: Pizza grande">
 
-      <label style="display:block; margin-bottom:6px; font-weight:600">Nome do produto</label>
-      <input type="text" id="produtoNome" class="input" placeholder="Ex: Pizza grande">
+        <label>Peso (kg)</label>
+        <input type="number" id="produtoPeso" class="input" placeholder="Ex: 1.5" step="0.1" min="0">
 
-      <label style="display:block; margin-bottom:6px; font-weight:600">Peso (kg)</label>
-      <input type="number" id="produtoPeso" class="input" placeholder="Ex: 1.5" step="0.1" min="0">
-
-      <button class="bigButton" onclick="irParaEntrega()">Continuar para entrega</button>
-      <button class="secondary" style="width:100%; margin-top:12px" onclick="voltarServicos()">Voltar aos serviços</button>
+        <button type="button" class="bigButton" onclick="irParaEntrega()">Continuar para entrega</button>
+        <button type="button" class="btn-outline" onclick="voltarServicos()">Voltar aos serviços</button>
+      </div>
     </div>
   </section>
 
-  <!-- PAINEL -->
-  <section class="dashboard-preview" id="painel" style="display:none">
-    <div class="container">
-      <div class="section-title">
-        <h2>Painel Inteligente</h2>
-        <p>Controle toda a operação da Thunder Logistic em tempo real.</p>
+  <!-- PAINEL CLIENTE -->
+  <section class="page" id="painel" style="display:none">
+    <div class="page-banner">
+      <div class="container">
+        <h1 id="painelTitulo">Meus Pedidos</h1>
+        <p id="painelSub">Acompanhe tudo num só lugar</p>
       </div>
-      <div class="preview">
-        <div class="sidebar">
-          <h2>THUNDER</h2>
-          <ul>
-            <li onclick="mostrarSecao('servicos')">🛍 Serviços</li>
-            <li onclick="abrirPainel('cliente')">📦 Meus Pedidos</li>
-            <li onclick="abrirPainel('carteira')">💰 Carteira</li>
-            <li onclick="abrirPainel('rastreamento')">📍 Rastreio</li>
-          </ul>
-        </div>
-        <div class="content" id="painelContent">
-          <!-- Conteúdo dinâmico injetado pelo JS -->
-        </div>
+    </div>
+    <div class="container page-body">
+      <div class="client-shell">
+        <aside class="client-nav">
+          <button type="button" class="nav-item" onclick="irPara('servicos')">🛍 Serviços</button>
+          <button type="button" class="nav-item active" id="navPedidos" onclick="abrirPainel('cliente')">📦 Meus Pedidos</button>
+          <button type="button" class="nav-item" id="navCarteira" onclick="abrirPainel('carteira')">💰 Carteira</button>
+          <button type="button" class="nav-item" id="navRastreio" onclick="abrirPainel('rastreamento')">📍 Rastreio</button>
+          <button type="button" class="nav-item logout" onclick="logout()">Sair</button>
+        </aside>
+        <main class="client-content" id="painelContent"></main>
       </div>
     </div>
   </section>
 
   <!-- FOOTER -->
-  <footer id="contato">
-    <h2>THUNDER LOGISTIC</h2>
-    <p>Entregas rápidas, inteligentes e seguras em Moçambique.</p>
-    <p class="footer-contact">
-      📧 <a href="mailto:princycumbane@gmail.com">princycumbane@gmail.com</a>
-      &nbsp;|&nbsp;
-      📱 <a href="tel:+258857674335">+258 85 767 4335</a>
-    </p>
-    <p class="copyright">© 2026 Thunder Logistic EI — Todos os direitos reservados</p>
+  <footer id="contato" style="display:none">
+    <div class="container">
+      <h2>THUNDER LOGISTIC</h2>
+      <p>Entregas rápidas em Maputo.</p>
+      <p class="footer-contact">📱 +258 85 767 4335</p>
+      <p class="copyright">© 2026 Thunder Logistic EI</p>
+    </div>
   </footer>
 
-  <!-- MODAL AUTH PROFISSIONAL -->
+  <!-- MODAL AUTH -->
   <div class="modal" id="authModal">
-    <div class="modal-box auth-box">
-      <button class="close-modal" onclick="fecharModais()">×</button>
-
-      <div class="auth-header">
-        <div class="auth-badge">Thunder Logistic</div>
-        <h2 id="authTitle">Entrar para pedir</h2>
-        <p id="authSubtitle">Acede à tua conta ou cria uma em segundos.</p>
-      </div>
+    <div class="modal-box">
+      <button type="button" class="close-modal" onclick="fecharModais()">×</button>
+      <div class="auth-badge">Thunder Logistic</div>
+      <h2 id="authTitle">Entrar</h2>
+      <p id="authSubtitle" class="auth-sub">Acede à tua conta para pedir.</p>
 
       <div class="auth-tabs">
         <button type="button" class="auth-tab active" id="tabLogin" onclick="mostrarAuthTab('login')">Entrar</button>
-        <button type="button" class="auth-tab" id="tabCadastro" onclick="mostrarAuthTab('cadastro')">Criar conta</button>
+        <button type="button" class="auth-tab" id="tabCadastro" onclick="mostrarAuthTab('cadastro')">Cadastrar</button>
       </div>
 
-      <!-- LOGIN -->
       <div id="authLogin" class="auth-panel">
-        <input class="input" id="loginEmail" type="text" placeholder="Telefone ou Email" autocomplete="username">
+        <input class="input" id="loginEmail" type="text" placeholder="Email ou telefone" autocomplete="username">
         <input class="input" id="loginSenha" type="password" placeholder="Senha" autocomplete="current-password">
-        <button class="bigButton" id="btnFazerLogin" onclick="fazerLogin()">Entrar e continuar</button>
+        <button type="button" class="bigButton" id="btnFazerLogin" onclick="fazerLogin()">Entrar</button>
       </div>
 
-      <!-- CADASTRO -->
       <div id="authCadastro" class="auth-panel" style="display:none">
         <input class="input" id="cadNome" placeholder="Nome completo" autocomplete="name">
         <input class="input" id="cadTelefone" placeholder="Telefone" autocomplete="tel">
         <input class="input" id="cadEmail" placeholder="Email" autocomplete="email">
-        <select class="input" id="cadTipo">
-          <option value="cliente">Cliente</option>
-          <option value="entregador">Entregador</option>
-          <option value="empresa">Empresa</option>
-        </select>
+        <input type="hidden" id="cadTipo" value="cliente">
         <input class="input" id="cadSenha" type="password" placeholder="Senha" autocomplete="new-password">
-        <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar Senha" autocomplete="new-password">
-        <button class="bigButton" id="btnCadastrar" onclick="cadastrar()">Criar conta e continuar</button>
+        <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar senha" autocomplete="new-password">
+        <button type="button" class="bigButton" id="btnCadastrar" onclick="cadastrar()">Criar conta</button>
       </div>
     </div>
   </div>
 
   <script src="js/app.js"></script>
-  <script>
-    if (typeof abrirLogin !== 'function') {
-      window.abrirLogin = function () {
-        var m = document.getElementById('authModal');
-        if (m) m.classList.add('show');
-      };
-      window.abrirCadastro = function () {
-        var m = document.getElementById('authModal');
-        if (m) m.classList.add('show');
-        if (typeof mostrarAuthTab === 'function') mostrarAuthTab('cadastro');
-      };
-      window.fecharModais = function () {
-        document.querySelectorAll('.modal').forEach(function (m) {
-          m.classList.remove('show');
-        });
-      };
-      window.onclick = function (e) {
-        if (e.target.classList.contains('modal')) fecharModais();
-      };
-    }
-  </script>
 </body>
 </html>
