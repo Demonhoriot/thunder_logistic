@@ -469,3 +469,41 @@ footer p{opacity:.8;font-size:14px;line-height:1.6}
 .bigButton.loading::after{
   content:"…";
 }
+/* Botões sempre visíveis na nav */
+.menu-always{
+  display:flex !important;
+  gap:10px;
+  align-items:center;
+}
+.btn-ghost{
+  background:transparent;
+  color:#fff;
+  padding:10px 16px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:14px;
+  border:1.5px solid rgba(255,255,255,.35);
+}
+.btn-ghost:hover{
+  background:rgba(255,255,255,.12);
+}
+.menu-always .btn-login{
+  padding:10px 18px;
+  font-size:14px;
+}
+
+/* Esconde hamburger (já não é usado) */
+.hamburger{display:none !important}
+
+@media(max-width:480px){
+  .menu-always{gap:8px}
+  .btn-ghost{
+    padding:8px 12px;
+    font-size:13px;
+  }
+  .menu-always .btn-login{
+    padding:8px 14px;
+    font-size:13px;
+  }
+  .logo{font-size:20px}
+}

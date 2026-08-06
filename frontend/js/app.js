@@ -87,8 +87,8 @@ function atualizarBotaoAuth() {
       }
     };
   } else {
-    btn.textContent = 'Entrar';
-    btn.onclick = abrirLogin;
+    btn.textContent = 'Criar conta';
+    btn.onclick = abrirCadastro;
   }
 }
 

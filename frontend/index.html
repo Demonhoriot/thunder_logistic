@@ -19,12 +19,9 @@
       <div class="logo" onclick="mostrarSecao('inicio')">
         <span>THUNDER</span> <span>LOGISTIC</span>
       </div>
-      <div class="menu" id="menu">
-        <a href="#inicio" onclick="mostrarSecao('inicio'); return false;">Início</a>
-        <button class="btn-login" id="btnAuth" onclick="abrirLogin()">Entrar</button>
-      </div>
-      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
+      <div class="menu menu-always" id="menu">
+        <button class="btn-ghost" onclick="abrirLogin()">Entrar</button>
+        <button class="btn-login" id="btnAuth" onclick="abrirCadastro()">Criar conta</button>
       </div>
     </div>
   </nav>
