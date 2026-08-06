@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>THUNDER LOGISTIC — Entregas Rápidas em Moçambique</title>
+  <meta name="description" content="Thunder Logistic — entregas rápidas de comida, farmácia, supermercado e encomendas em Maputo. Rastreio em tempo real.">
+  <meta name="theme-color" content="#0057FF">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,11 +16,12 @@
   <!-- NAV -->
   <nav>
     <div class="container nav-container">
-      <div class="logo"><span>THUNDER</span> <span>LOGISTIC</span></div>
-            <div class="menu" id="menu">
-        <a href="#inicio" onclick="mostrarSecao('inicio'); return false;">Início</a>
-        <button class="btn-login" onclick="abrirLogin()">Entrar</button>
+      <div class="logo" onclick="mostrarSecao('inicio')">
+        <span>THUNDER</span> <span>LOGISTIC</span>
       </div>
+      <div class="menu" id="menu">
+        <a href="#inicio" onclick="mostrarSecao('inicio'); return false;">Início</a>
+        <button class="btn-login" id="btnAuth" onclick="abrirLogin()">Entrar</button>
       </div>
       <div class="hamburger" id="hamburger" onclick="toggleMenu()">
         <span></span><span></span><span></span>
@@ -26,7 +29,7 @@
     </div>
   </nav>
 
-   <!-- HERO -->
+  <!-- HERO (página inicial curta + imagem do entregador de fundo) -->
   <section class="hero" id="inicio">
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
@@ -41,39 +44,39 @@
   </section>
 
   <!-- SERVIÇOS -->
- <section class="services" id="servicos" style="display:none">
+  <section class="services" id="servicos" style="display:none">
     <div class="container">
-            <div class="section-title">
+      <div class="section-title">
         <h2>Escolha o serviço</h2>
         <p>O que precisa de entregar?</p>
       </div>
       <div class="service-grid">
-        <div class="service" style="cursor:pointer" onclick="escolherServico('Comida')">
+        <div class="service" onclick="escolherServico('Comida')">
           <div class="icon">🍔</div>
           <h3>Comida</h3>
           <p>Refeições e restaurantes</p>
         </div>
-        <div class="service" style="cursor:pointer" onclick="escolherServico('Farmácia')">
+        <div class="service" onclick="escolherServico('Farmácia')">
           <div class="icon">💊</div>
           <h3>Farmácia</h3>
           <p>Medicamentos</p>
         </div>
-        <div class="service" style="cursor:pointer" onclick="escolherServico('Supermercado')">
+        <div class="service" onclick="escolherServico('Supermercado')">
           <div class="icon">🛒</div>
           <h3>Supermercado</h3>
           <p>Compras de casa</p>
         </div>
-        <div class="service" style="cursor:pointer" onclick="escolherServico('Encomenda')">
+        <div class="service" onclick="escolherServico('Encomenda')">
           <div class="icon">📦</div>
           <h3>Encomenda</h3>
           <p>Pacotes e documentos</p>
         </div>
-        <div class="service" style="cursor:pointer" onclick="escolherServico('Documentos')">
+        <div class="service" onclick="escolherServico('Documentos')">
           <div class="icon">📄</div>
           <h3>Documentos</h3>
           <p>Correspondência</p>
         </div>
-        <div class="service" style="cursor:pointer" onclick="escolherServico('Outro')">
+        <div class="service" onclick="escolherServico('Outro')">
           <div class="icon">📦</div>
           <h3>Outro</h3>
           <p>Outros envios</p>
@@ -81,7 +84,8 @@
       </div>
     </div>
   </section>
-    <!-- FORMULÁRIO DO PRODUTO -->
+
+  <!-- FORMULÁRIO DO PRODUTO -->
   <section id="formProduto" style="display:none; padding:100px 0 60px">
     <div class="container" style="max-width:520px">
       <h2 style="color:#0066FF; margin-bottom:24px">
@@ -90,7 +94,6 @@
 
       <label style="display:block; margin-bottom:6px; font-weight:600">Foto do produto</label>
       <input type="file" id="produtoFoto" class="input" accept="image/*" capture="environment">
-
       <div id="previewFoto" style="margin:12px 0"></div>
 
       <label style="display:block; margin-bottom:6px; font-weight:600">Nome do produto</label>
@@ -115,7 +118,7 @@
         <div class="sidebar">
           <h2>THUNDER</h2>
           <ul>
-                       <li onclick="mostrarSecao('servicos')">🛍 Serviços</li>
+            <li onclick="mostrarSecao('servicos')">🛍 Serviços</li>
             <li onclick="abrirPainel('cliente'); mostrarSecao('painel')">📦 Meus Pedidos</li>
             <li onclick="abrirPainel('carteira'); mostrarSecao('painel')">💰 Carteira</li>
             <li onclick="abrirPainel('rastreamento'); mostrarSecao('painel')">📍 Rastreio</li>
@@ -132,8 +135,12 @@
   <footer id="contato">
     <h2>THUNDER LOGISTIC</h2>
     <p>Entregas rápidas, inteligentes e seguras em Moçambique.</p>
-    <p style="margin-top:12px">📧 princycumbane@gmail.com &nbsp;|&nbsp; 📱 +258 85 767 4335</p>
-    <p style="margin-top:20px;opacity:.6">© 2026 Thunder Logistic EI — Todos os direitos reservados</p>
+    <p class="footer-contact">
+      📧 <a href="mailto:princycumbane@gmail.com">princycumbane@gmail.com</a>
+      &nbsp;|&nbsp;
+      📱 <a href="tel:+258857674335">+258 85 767 4335</a>
+    </p>
+    <p class="copyright">© 2026 Thunder Logistic EI — Todos os direitos reservados</p>
   </footer>
 
   <!-- MODAL LOGIN -->
@@ -145,7 +152,7 @@
       <input class="input" id="loginSenha" type="password" placeholder="Senha">
       <button class="bigButton" onclick="fazerLogin()">Entrar</button>
       <div class="modal-link">
-        <a href="#" onclick="event.preventDefault();abrirCadastro()">Criar Conta</a>
+        <a href="#" onclick="event.preventDefault(); abrirCadastro()">Criar Conta</a>
       </div>
     </div>
   </div>
@@ -167,34 +174,34 @@
       <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar Senha">
       <button class="bigButton" onclick="cadastrar()">Cadastrar</button>
       <div class="modal-link">
-        <a href="#" onclick="event.preventDefault();abrirLogin()">Já tenho conta</a>
+        <a href="#" onclick="event.preventDefault(); abrirLogin()">Já tenho conta</a>
       </div>
     </div>
   </div>
 
-<script src="js/app.js"></script>
-<script>
-  // Fallback: se o app.js não carregar, estes botões ainda funcionam
-  if (typeof abrirLogin !== 'function') {
-    window.abrirLogin = function () {
-      var m = document.getElementById('loginModal');
-      if (m) m.classList.add('show');
-    };
-    window.abrirCadastro = function () {
-      var l = document.getElementById('loginModal');
-      var c = document.getElementById('cadastroModal');
-      if (l) l.classList.remove('show');
-      if (c) c.classList.add('show');
-    };
-    window.fecharModais = function () {
-      document.querySelectorAll('.modal').forEach(function (m) {
-        m.classList.remove('show');
-      });
-    };
-    window.onclick = function (e) {
-      if (e.target.classList.contains('modal')) fecharModais();
-    };
-  }
-</script>
+  <script src="js/app.js"></script>
+  <script>
+    // Fallback se app.js não carregar
+    if (typeof abrirLogin !== 'function') {
+      window.abrirLogin = function () {
+        var m = document.getElementById('loginModal');
+        if (m) m.classList.add('show');
+      };
+      window.abrirCadastro = function () {
+        var l = document.getElementById('loginModal');
+        var c = document.getElementById('cadastroModal');
+        if (l) l.classList.remove('show');
+        if (c) c.classList.add('show');
+      };
+      window.fecharModais = function () {
+        document.querySelectorAll('.modal').forEach(function (m) {
+          m.classList.remove('show');
+        });
+      };
+      window.onclick = function (e) {
+        if (e.target.classList.contains('modal')) fecharModais();
+      };
+    }
+  </script>
 </body>
 </html>
