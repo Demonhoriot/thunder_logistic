@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thunder Pro — Entregadores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container nav-container">
+    <div class="logo"><span>THUNDER</span> <span>PRO</span></div>
+    <div class="menu" id="menu">
+      <button class="btn-ghost" id="btnEntrar" onclick="abrirLogin()">Entrar</button>
+      <button class="btn-login" id="btnCadastrar" onclick="abrirCadastro()">Cadastrar</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO (só sem login) -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <div class="badge">🏍 App exclusiva para entregadores</div>
+    <h1>Ganhe a fazer<br>entregas.</h1>
+    <p>Receba pedidos em tempo real, escolha o seu plano e aumente o rendimento.</p>
+    <div class="hero-buttons">
+      <button class="primary" onclick="abrirCadastro()">Começar agora</button>
+      <button class="secondary" onclick="abrirLogin()">Já tenho conta</button>
+    </div>
+  </div>
+</section>
+
+<!-- APP (só com login) -->
+<section class="app" id="app" style="display:none">
+  <div class="container app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-user">
+        <div class="avatar">🏍</div>
+        <div>
+          <strong id="sideNome">Entregador</strong>
+          <span id="sideStatus" class="status-off">Offline</span>
+        </div>
+      </div>
+      <ul>
+        <li class="active" onclick="abrirVista('home')">🏠 Início</li>
+        <li onclick="abrirVista('pedidos')">📦 Pedidos</li>
+        <li onclick="abrirVista('planos')">💳 Planos</li>
+        <li onclick="abrirVista('ganhos')">💰 Ganhos</li>
+        <li onclick="abrirVista('perfil')">👤 Perfil</li>
+        <li onclick="logout()">🚪 Sair</li>
+      </ul>
+    </aside>
+
+    <!-- Content -->
+    <main class="main" id="mainContent">
+      <!-- preenchido por JS -->
+    </main>
+  </div>
+</section>
+
+<!-- MODAL AUTH -->
+<div class="modal" id="authModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="fecharModais()">×</button>
+    <div class="tabs">
+      <button class="tab active" id="tabLogin" onclick="mostrarTab('login')">Entrar</button>
+      <button class="tab" id="tabCadastro" onclick="mostrarTab('cadastro')">Cadastrar</button>
+    </div>
+
+    <div id="formLogin">
+      <input class="input" id="loginEmail" type="text" placeholder="Email ou telefone">
+      <input class="input" id="loginSenha" type="password" placeholder="Senha">
+      <button class="bigButton" onclick="fazerLogin()">Entrar</button>
+    </div>
+
+    <div id="formCadastro" style="display:none">
+      <input class="input" id="cadNome" placeholder="Nome completo">
+      <input class="input" id="cadTelefone" placeholder="Telefone">
+      <input class="input" id="cadEmail" placeholder="Email">
+      <input class="input" id="cadSenha" type="password" placeholder="Senha">
+      <input class="input" id="cadConfirmar" type="password" placeholder="Confirmar senha">
+      <button class="bigButton" onclick="cadastrar()">Criar conta de entregador</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
