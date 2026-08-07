@@ -1,0 +1,73 @@
+/* COLE ISTO no pro/frontend/js/app.js — substitui a função renderHome e adiciona buscarPedidosReais */
+
+function renderHome() {
+  setTimeout(buscarPedidosReais, 500);
+  return `
+    <h1 class="panel-title">Olá, ${(user && user.nome) ? user.nome.split(' ')[0] : 'Entregador'} 👋</h1>
+    <div class="toggle-row">
+      <div>
+        <strong>Status de trabalho</strong>
+        <p style="color:var(--muted);font-size:13px;margin-top:4px">Fique online para receber pedidos dos clientes</p>
+      </div>
+      <button class="toggle-btn ${estado.online ? 'on' : 'off'}" onclick="alternarOnline()">
+        ${estado.online ? '● Online' : '○ Offline'}
+      </button>
+    </div>
+    <div class="grid-3">
+      <div class="card"><h4>Saldo</h4><h2 class="green">${estado.saldo} MT</h2></div>
+      <div class="card"><h4>Plano</h4><h2 class="yellow">${estado.plano || 'Nenhum'}</h2></div>
+      <div class="card"><h4>Entregas restantes</h4><h2>${estado.entregasDisponiveis}</h2></div>
+    </div>
+    <h2 style="margin:20px 0 12px;font-size:16px">Pedidos dos clientes</h2>
+    <div id="pedidoBox">
+      ${estado.online
+        ? '<div class="pedido-card"><p>A carregar pedidos reais...</p></div>'
+        : '<div class="pedido-card"><p>Fique online para ver pedidos criados no app dos clientes.</p></div>'}
+    </div>
+  `;
+}
+
+async function buscarPedidosReais() {
+  const box = document.getElementById('pedidoBox');
+  if (!box || !estado.online) return;
+  try {
+    const pedidos = await api('/pedidos/disponiveis');
+    if (!pedidos || !pedidos.length) {
+      box.innerHTML = '<div class="pedido-card"><p>Nenhum pedido de clientes neste momento. Quando um cliente pedir no app, aparece aqui.</p></div>';
+      return;
+    }
+    box.innerHTML = pedidos.map(p => `
+      <div class="pedido-card" style="border-color:var(--primary);margin-bottom:12px">
+        <h3>📦 Pedido #${p.id}</h3>
+        <p><b>Cliente:</b> ${p.cliente_nome || '—'}</p>
+        <p><b>Serviço:</b> ${p.tipo}</p>
+        <p><b>Origem:</b> ${p.origem}</p>
+        <p><b>Destino:</b> ${p.destino}</p>
+        <p><b>Valor:</b> ${p.valor} MT</p>
+        ${p.observacoes ? '<p><b>Obs:</b> ' + p.observacoes + '</p>' : ''}
+        <div class="row-btns">
+          <button class="btn-ok" onclick="aceitarPedidoReal('${p.id}')">Aceitar</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    box.innerHTML = '<div class="pedido-card"><p style="color:#ff6b6b">Erro: ' + err.message + '</p></div>';
+  }
+}
+
+async function aceitarPedidoReal(id) {
+  try {
+    const data = await api('/pedidos/' + id + '/aceitar', { method: 'POST', body: '{}' });
+    alert('Pedido #' + id + ' aceite!');
+    estado.entregasDisponiveis = Math.max(0, estado.entregasDisponiveis - 1);
+    abrirVista('home');
+  } catch (err) {
+    alert(err.message);
+    buscarPedidosReais();
+  }
+}
+
+// Chamar a cada 8s quando online
+setInterval(function() {
+  if (estado.online && document.getElementById('pedidoBox')) buscarPedidosReais();
+}, 8000);

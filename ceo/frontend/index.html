@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thunder CEO — Painel da Empresa</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<section id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="logo-ceo"><span>THUNDER</span> <span>CEO</span></div>
+    <p class="login-sub">Painel de monitorização da operação</p>
+    <input class="input" id="loginEmail" type="text" placeholder="Email admin" value="">
+    <input class="input" id="loginSenha" type="password" placeholder="Senha">
+    <button class="bigButton" onclick="fazerLogin()">Entrar no CEO</button>
+    <p class="hint">Só contas tipo <b>admin</b> têm acesso</p>
+  </div>
+</section>
+
+<!-- APP -->
+<section id="app" class="app" style="display:none">
+  <aside class="sidebar">
+    <div class="side-brand"><span>THUNDER</span> <span>CEO</span></div>
+    <div class="side-user">
+      <strong id="ceoNome">Admin</strong>
+      <small id="ceoEmail">—</small>
+    </div>
+    <ul>
+      <li class="active" onclick="abrirVista('dashboard')">📊 Dashboard</li>
+      <li onclick="abrirVista('pedidos')">📦 Pedidos</li>
+      <li onclick="abrirVista('users')">👥 Utilizadores</li>
+      <li onclick="abrirVista('entregadores')">🏍 Entregadores</li>
+      <li onclick="abrirVista('clientes')">🛒 Clientes</li>
+      <li onclick="abrirVista('logout')">🚪 Sair</li>
+    </ul>
+    <div class="side-links">
+      <a href="/" target="_blank">→ Site Clientes</a>
+      <a href="/pro/" target="_blank">→ Thunder Pro</a>
+    </div>
+  </aside>
+  <main class="main" id="mainContent"></main>
+</section>
+
+<script src="js/app.js"></script>
+</body>
+</html>

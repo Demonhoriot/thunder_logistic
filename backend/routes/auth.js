@@ -6,32 +6,24 @@ const { gerarToken, autenticar } = require('../middleware/auth');
 
 const router = express.Router();
 
-// POST /api/auth/register
 router.post('/register', (req, res) => {
   try {
     const { nome, email, telefone, senha, tipo = 'cliente' } = req.body;
-
     if (!nome || !email || !senha) {
       return res.status(400).json({ erro: 'Nome, email e senha são obrigatórios' });
     }
-
     const tiposValidos = ['cliente', 'entregador', 'empresa'];
     if (!tiposValidos.includes(tipo)) {
-      return res.status(400).json({ erro: 'Tipo inválido. Use: cliente, entregador ou empresa' });
+      return res.status(400).json({ erro: 'Tipo inválido: cliente, entregador ou empresa' });
     }
-
-    const existe = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-    if (existe) {
+    if (db.prepare('SELECT id FROM users WHERE email = ?').get(email)) {
       return res.status(409).json({ erro: 'Email já registado' });
     }
 
     const id = uuidv4();
     const hash = bcrypt.hashSync(senha, 10);
-
-    db.prepare(`
-      INSERT INTO users (id, nome, email, telefone, senha, tipo)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(id, nome, email, telefone || '', hash, tipo);
+    db.prepare(`INSERT INTO users (id, nome, email, telefone, senha, tipo) VALUES (?,?,?,?,?,?)`)
+      .run(id, nome, email, telefone || '', hash, tipo);
 
     if (tipo === 'cliente') {
       db.prepare('INSERT INTO clientes (user_id, saldo, pontos) VALUES (?, 500, 100)').run(id);
@@ -42,63 +34,38 @@ router.post('/register', (req, res) => {
     }
 
     const user = { id, nome, email, tipo };
-    const token = gerarToken(user);
-
-    res.status(201).json({
-      mensagem: 'Conta criada com sucesso',
-      token,
-      user
-    });
+    res.status(201).json({ mensagem: 'Conta criada', token: gerarToken(user), user });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ erro: 'Erro interno do servidor' });
+    res.status(500).json({ erro: 'Erro interno' });
   }
 });
 
-// POST /api/auth/login
 router.post('/login', (req, res) => {
   try {
     const { email, senha } = req.body;
-
-    if (!email || !senha) {
-      return res.status(400).json({ erro: 'Email e senha são obrigatórios' });
-    }
+    if (!email || !senha) return res.status(400).json({ erro: 'Email e senha obrigatórios' });
 
     const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-    if (!user) {
+    if (!user || !bcrypt.compareSync(senha, user.senha)) {
       return res.status(401).json({ erro: 'Credenciais inválidas' });
     }
-
-    const valido = bcrypt.compareSync(senha, user.senha);
-    if (!valido) {
-      return res.status(401).json({ erro: 'Credenciais inválidas' });
-    }
-
-    const token = gerarToken(user);
 
     res.json({
-      mensagem: 'Login realizado com sucesso',
-      token,
-      user: {
-        id: user.id,
-        nome: user.nome,
-        email: user.email,
-        telefone: user.telefone,
-        tipo: user.tipo
-      }
+      mensagem: 'Login OK',
+      token: gerarToken(user),
+      user: { id: user.id, nome: user.nome, email: user.email, telefone: user.telefone, tipo: user.tipo }
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ erro: 'Erro interno do servidor' });
+    res.status(500).json({ erro: 'Erro interno' });
   }
 });
 
-// GET /api/auth/me
 router.get('/me', autenticar, (req, res) => {
   const user = db.prepare('SELECT id, nome, email, telefone, tipo, created_at FROM users WHERE id = ?')
     .get(req.user.id);
-
-  if (!user) return res.status(404).json({ erro: 'Utilizador não encontrado' });
+  if (!user) return res.status(404).json({ erro: 'Não encontrado' });
 
   let extra = {};
   if (user.tipo === 'cliente') {
@@ -108,7 +75,6 @@ router.get('/me', autenticar, (req, res) => {
   } else if (user.tipo === 'empresa') {
     extra = db.prepare('SELECT nome_empresa, categoria, saldo FROM empresas WHERE user_id = ?').get(user.id) || {};
   }
-
   res.json({ ...user, ...extra });
 });
 

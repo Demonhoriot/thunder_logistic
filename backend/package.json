@@ -1,7 +1,7 @@
 {
   "name": "thunder-logistic-backend",
-  "version": "1.1.0",
-  "description": "Backend API Thunder Logistic - Clientes + Pro + CEO",
+  "version": "1.2.0",
+  "description": "Backend Thunder Logistic - Clientes + Pro + CEO | Pedidos reais partilhados",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

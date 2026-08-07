@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require('uuid');
 
 const dbPath = path.join(__dirname, 'thunder.db');
 const db = new Database(dbPath);
-
 db.pragma('foreign_keys = ON');
 
 function initDatabase() {
@@ -100,41 +99,31 @@ function initDatabase() {
     );
   `);
 
-  // Admin padrão
-  const adminExists = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@thunder.mz');
-  if (!adminExists) {
+  // Admin
+  if (!db.prepare('SELECT id FROM users WHERE email = ?').get('admin@thunder.mz')) {
     const hash = bcrypt.hashSync('admin123', 10);
-    const adminId = uuidv4();
-    db.prepare(`
-      INSERT INTO users (id, nome, email, telefone, senha, tipo)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(adminId, 'Administrador', 'admin@thunder.mz', '840000000', hash, 'admin');
+    const id = uuidv4();
+    db.prepare(`INSERT INTO users (id, nome, email, telefone, senha, tipo) VALUES (?,?,?,?,?,?)`)
+      .run(id, 'Administrador', 'admin@thunder.mz', '840000000', hash, 'admin');
 
     const cupons = [
       { codigo: 'BEMVINDO', desconto: 50 },
       { codigo: 'THUNDER10', desconto: 10 },
       { codigo: 'FRETEGRATIS', desconto: 100 }
     ];
-    const insertCupom = db.prepare('INSERT INTO cupons (id, codigo, desconto) VALUES (?, ?, ?)');
-    cupons.forEach(c => insertCupom.run(uuidv4(), c.codigo, c.desconto));
-
-    console.log('✅ Admin criado: admin@thunder.mz / admin123');
+    const ins = db.prepare('INSERT INTO cupons (id, codigo, desconto) VALUES (?,?,?)');
+    cupons.forEach(c => ins.run(uuidv4(), c.codigo, c.desconto));
+    console.log('✅ Admin: admin@thunder.mz / admin123');
   }
 
   // CEO
-  const ceoEmail = 'demonhoriot@ceo.mz';
-  const ceoExists = db.prepare('SELECT id FROM users WHERE email = ?').get(ceoEmail);
-  if (!ceoExists) {
-    const ceoId = uuidv4();
-    const ceoHash = bcrypt.hashSync('peitos008', 10);
-    db.prepare(`
-      INSERT INTO users (id, nome, email, telefone, senha, tipo)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(ceoId, 'Demonhoriot CEO', ceoEmail, '840000000', ceoHash, 'admin');
-    console.log('✅ CEO criado: demonhoriot@ceo.mz / peitos008');
+  if (!db.prepare('SELECT id FROM users WHERE email = ?').get('demonhoriot@ceo.mz')) {
+    const hash = bcrypt.hashSync('peitos008', 10);
+    db.prepare(`INSERT INTO users (id, nome, email, telefone, senha, tipo) VALUES (?,?,?,?,?,?)`)
+      .run(uuidv4(), 'Demonhoriot CEO', 'demonhoriot@ceo.mz', '840000000', hash, 'admin');
+    console.log('✅ CEO: demonhoriot@ceo.mz / peitos008');
   }
 }
 
 initDatabase();
-
 module.exports = db;
