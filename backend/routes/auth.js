@@ -33,7 +33,6 @@ router.post('/register', (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(id, nome, email, telefone || '', hash, tipo);
 
-    // Criar perfil específico
     if (tipo === 'cliente') {
       db.prepare('INSERT INTO clientes (user_id, saldo, pontos) VALUES (?, 500, 100)').run(id);
     } else if (tipo === 'entregador') {
@@ -101,7 +100,6 @@ router.get('/me', autenticar, (req, res) => {
 
   if (!user) return res.status(404).json({ erro: 'Utilizador não encontrado' });
 
-  // Dados extras conforme o tipo
   let extra = {};
   if (user.tipo === 'cliente') {
     extra = db.prepare('SELECT saldo, pontos FROM clientes WHERE user_id = ?').get(user.id) || {};

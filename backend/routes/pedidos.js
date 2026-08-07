@@ -5,7 +5,7 @@ const { autenticar, autorizar } = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET /api/pedidos — listar (filtrado por tipo de user)
+// GET /api/pedidos
 router.get('/', autenticar, (req, res) => {
   try {
     let pedidos;
@@ -46,27 +46,28 @@ router.get('/', autenticar, (req, res) => {
   }
 });
 
-// POST /api/pedidos — criar pedido (cliente)
+// POST /api/pedidos — criar (cliente)
 router.post('/', autenticar, autorizar('cliente'), (req, res) => {
   try {
-    const { tipo, origem, destino } = req.body;
+    const { tipo, origem, destino, valor, observacoes } = req.body;
 
     if (!tipo || !origem || !destino) {
       return res.status(400).json({ erro: 'Tipo, origem e destino são obrigatórios' });
     }
 
-    const valor = Math.floor(Math.random() * 400) + 150;
+    const valorFinal = valor ? Number(valor) : Math.floor(Math.random() * 400) + 150;
     const id = uuidv4().slice(0, 8).toUpperCase();
 
     db.prepare(`
-      INSERT INTO pedidos (id, cliente_id, tipo, origem, destino, valor, status)
-      VALUES (?, ?, ?, ?, ?, ?, 'Procurando Entregador')
-    `).run(id, req.user.id, tipo, origem, destino, valor);
+      INSERT INTO pedidos (id, cliente_id, tipo, origem, destino, valor, observacoes, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'Procurando Entregador')
+    `).run(id, req.user.id, tipo, origem, destino, valorFinal, observacoes || '');
 
     const pedido = db.prepare('SELECT * FROM pedidos WHERE id = ?').get(id);
 
     res.status(201).json({
       mensagem: 'Pedido criado com sucesso',
+      id: pedido.id,
       pedido
     });
   } catch (err) {
@@ -75,7 +76,7 @@ router.post('/', autenticar, autorizar('cliente'), (req, res) => {
   }
 });
 
-// PATCH /api/pedidos/:id/status — atualizar status
+// PATCH /api/pedidos/:id/status
 router.patch('/:id/status', autenticar, (req, res) => {
   try {
     const { status } = req.body;
@@ -98,7 +99,6 @@ router.patch('/:id/status', autenticar, (req, res) => {
     const pedido = db.prepare('SELECT * FROM pedidos WHERE id = ?').get(id);
     if (!pedido) return res.status(404).json({ erro: 'Pedido não encontrado' });
 
-    // Permissões
     if (req.user.tipo === 'cliente' && pedido.cliente_id !== req.user.id) {
       return res.status(403).json({ erro: 'Sem permissão' });
     }
@@ -110,7 +110,6 @@ router.patch('/:id/status', autenticar, (req, res) => {
       UPDATE pedidos SET status = ?, updated_at = datetime('now') WHERE id = ?
     `).run(status, id);
 
-    // Se entregue → credit pontos ao cliente e saldo ao entregador
     if (status === 'Entregue') {
       db.prepare('UPDATE clientes SET pontos = pontos + 10 WHERE user_id = ?')
         .run(pedido.cliente_id);
@@ -120,7 +119,7 @@ router.patch('/:id/status', autenticar, (req, res) => {
           UPDATE entregadores
           SET saldo = saldo + ?, total_entregas = total_entregas + 1
           WHERE user_id = ?
-        `).run(pedido.valor * 0.7, pedido.entregador_id); // 70% para o entregador
+        `).run(pedido.valor * 0.7, pedido.entregador_id);
       }
     }
 
@@ -170,7 +169,7 @@ router.post('/:id/aceitar', autenticar, autorizar('entregador'), (req, res) => {
   }
 });
 
-// GET /api/pedidos/disponiveis — pedidos à espera de entregador
+// GET /api/pedidos/disponiveis/lista
 router.get('/disponiveis/lista', autenticar, autorizar('entregador'), (req, res) => {
   try {
     const pedidos = db.prepare(`

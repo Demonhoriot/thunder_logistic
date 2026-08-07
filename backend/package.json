@@ -1,12 +1,11 @@
 {
   "name": "thunder-logistic-backend",
-  "version": "1.0.0",
-  "description": "Backend API da Thunder Logistic - Plataforma de entregas em Moçambique",
+  "version": "1.1.0",
+  "description": "Backend API Thunder Logistic - Clientes + Pro + CEO",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js",
-    "init-db": "node db/init.js"
+    "dev": "node --watch server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -32,17 +32,31 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     servico: 'Thunder Logistic API',
-    versao: '1.0.0',
+    versao: '1.1.0',
     timestamp: new Date().toISOString()
   });
 });
 
-// Servir frontend em produção (opcional)
+// ========== THUNDER PRO (entregadores) — ANTES dos clientes ==========
+const proPath = path.join(__dirname, '../pro/frontend');
+app.use('/pro', express.static(proPath));
+app.get('/pro/*', (req, res) => {
+  res.sendFile(path.join(proPath, 'index.html'), (err) => {
+    if (err) {
+      res.status(404).json({
+        erro: 'Thunder Pro não encontrado. Confirma a pasta pro/frontend no deploy.'
+      });
+    }
+  });
+});
+
+// ========== FRONTEND CLIENTES ==========
 const frontendPath = path.join(__dirname, '../frontend');
 app.use(express.static(frontendPath));
 
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
+  if (req.path.startsWith('/pro')) return next();
   const indexFile = path.join(frontendPath, 'index.html');
   res.sendFile(indexFile, (err) => {
     if (err) {
@@ -63,12 +77,14 @@ app.listen(PORT, () => {
   console.log('');
   console.log('⚡ THUNDER LOGISTIC API');
   console.log('─────────────────────────────');
-  console.log(`🚀 Servidor a correr em http://localhost:${PORT}`);
+  console.log(`🚀 Servidor: http://localhost:${PORT}`);
+  console.log(`👤 Clientes: http://localhost:${PORT}/`);
+  console.log(`🏍  Entregadores: http://localhost:${PORT}/pro/`);
   console.log(`📡 API: http://localhost:${PORT}/api`);
   console.log(`❤️  Health: http://localhost:${PORT}/api/health`);
   console.log('');
-  console.log('Conta admin padrão:');
-  console.log('  Email: admin@thunder.mz');
-  console.log('  Senha: admin123');
+  console.log('Contas padrão:');
+  console.log('  Admin: admin@thunder.mz / admin123');
+  console.log('  CEO:   demonhoriot@ceo.mz / peitos008');
   console.log('─────────────────────────────');
 });

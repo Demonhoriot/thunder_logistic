@@ -1,11 +1,11 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 
 const dbPath = path.join(__dirname, 'thunder.db');
 const db = new Database(dbPath);
 
-// Ativar foreign keys
 db.pragma('foreign_keys = ON');
 
 function initDatabase() {
@@ -60,6 +60,7 @@ function initDatabase() {
       origem TEXT NOT NULL,
       destino TEXT NOT NULL,
       valor REAL NOT NULL,
+      observacoes TEXT DEFAULT '',
       status TEXT DEFAULT 'Procurando Entregador',
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
@@ -88,33 +89,27 @@ function initDatabase() {
       plano TEXT,
       ativado_em TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS chat_mensagens (
+      id TEXT PRIMARY KEY,
+      pedido_id TEXT,
+      user_id TEXT,
+      remetente TEXT,
+      texto TEXT,
+      hora TEXT
+    );
   `);
 
-  // Seed de dados iniciais
+  // Admin padrão
   const adminExists = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@thunder.mz');
   if (!adminExists) {
-    const { v4: uuidv4 } = require('uuid');
     const hash = bcrypt.hashSync('admin123', 10);
     const adminId = uuidv4();
-
     db.prepare(`
       INSERT INTO users (id, nome, email, telefone, senha, tipo)
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(adminId, 'Administrador', 'admin@thunder.mz', '840000000', hash, 'admin');
-  // Admin CEO
-  const ceoEmail = 'demonhoriot@ceo.mz';
-  const ceoExists = db.prepare('SELECT id FROM users WHERE email = ?').get(ceoEmail);
-  if (!ceoExists) {
-    const { v4: uuidv4 } = require('uuid');
-    const ceoId = uuidv4();
-    const ceoHash = bcrypt.hashSync('peitos008', 10);
-    db.prepare(`
-      INSERT INTO users (id, nome, email, telefone, senha, tipo)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(ceoId, 'Demonhoriot CEO', ceoEmail, '840000000', ceoHash, 'admin');
-    console.log('Admin CEO criado: demonhoriot@ceo.mz');
-  }  
-    // Cupons padrão
+
     const cupons = [
       { codigo: 'BEMVINDO', desconto: 50 },
       { codigo: 'THUNDER10', desconto: 10 },
@@ -123,7 +118,20 @@ function initDatabase() {
     const insertCupom = db.prepare('INSERT INTO cupons (id, codigo, desconto) VALUES (?, ?, ?)');
     cupons.forEach(c => insertCupom.run(uuidv4(), c.codigo, c.desconto));
 
-    console.log('✅ Base de dados inicializada com admin (admin@thunder.mz / admin123)');
+    console.log('✅ Admin criado: admin@thunder.mz / admin123');
+  }
+
+  // CEO
+  const ceoEmail = 'demonhoriot@ceo.mz';
+  const ceoExists = db.prepare('SELECT id FROM users WHERE email = ?').get(ceoEmail);
+  if (!ceoExists) {
+    const ceoId = uuidv4();
+    const ceoHash = bcrypt.hashSync('peitos008', 10);
+    db.prepare(`
+      INSERT INTO users (id, nome, email, telefone, senha, tipo)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(ceoId, 'Demonhoriot CEO', ceoEmail, '840000000', ceoHash, 'admin');
+    console.log('✅ CEO criado: demonhoriot@ceo.mz / peitos008');
   }
 }
 
